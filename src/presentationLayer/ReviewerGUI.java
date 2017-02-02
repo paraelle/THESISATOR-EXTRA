@@ -14,7 +14,7 @@ import java.awt.Color;
 import javax.swing.border.MatteBorder;
 import javax.swing.ImageIcon;
 
-public class StudentGUI {
+public class ReviewerGUI {
 
 	private JFrame frmThesisatorextra;
 
@@ -25,7 +25,7 @@ public class StudentGUI {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					StudentGUI window = new StudentGUI();
+					ReviewerGUI window = new ReviewerGUI();
 					window.frmThesisatorextra.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -37,7 +37,7 @@ public class StudentGUI {
 	/**
 	 * Create the application.
 	 */
-	public StudentGUI() {
+	public ReviewerGUI() {
 		initialize();
 	}
 
@@ -58,14 +58,14 @@ public class StudentGUI {
 		JPanel panelHome = new JPanel();
 		tabbedPane.addTab("Home", null, panelHome, null);
 		
-		JPanel panelThesisTopic = new JPanel();
-		tabbedPane.addTab("Thesis topic", null, panelThesisTopic, null);
+		JPanel panelThesisTopics = new JPanel();
+		tabbedPane.addTab("Thesis topics", null, panelThesisTopics, null);
 		
 		JPanel panelDefenseSchedule = new JPanel();
 		tabbedPane.addTab("Defense schedule", null, panelDefenseSchedule, null);
 		
-		JPanel panelThesis = new JPanel();
-		tabbedPane.addTab("Thesis", null, panelThesis, null);
+		JPanel panelTheses = new JPanel();
+		tabbedPane.addTab("Theses", null, panelTheses, null);
 		
 		JPanel panelMail = new JPanel();
 		tabbedPane.addTab("Mail", null, panelMail, null);
