@@ -3,6 +3,8 @@ package presentationLayer;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
@@ -15,12 +17,21 @@ import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import java.awt.Color;
 import javax.swing.border.MatteBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 import java.awt.Dimension;
 import javax.swing.border.EmptyBorder;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JTextField;
+import java.awt.Component;
+import java.awt.Font;
+import javax.swing.SwingConstants;
 
 
 
@@ -29,6 +40,7 @@ public class StudentGUI {
 
 	private JFrame frmThesisatorextra;
 	private JTable table;
+	private JTextField txtFilepath;
 
 	/**
 	 * Launch the application.
@@ -111,6 +123,86 @@ public class StudentGUI {
 		
 		JPanel panelThesis = new JPanel();
 		tabbedPane.addTab("Thesis", null, panelThesis, null);
+		panelThesis.setLayout(new BoxLayout(panelThesis, BoxLayout.Y_AXIS));
+		
+		JLabel lblThesisTopic = new JLabel("Topic of the thesis");
+		lblThesisTopic.setFont(new Font("Tahoma", Font.PLAIN, 40));
+		panelThesis.add(lblThesisTopic);
+		
+		JSeparator separator = new JSeparator();
+		separator.setPreferredSize(new Dimension(0, 10));
+		separator.setOrientation(SwingConstants.VERTICAL);
+		panelThesis.add(separator);
+		
+		JButton btnCheckThesis = new JButton("Check Thesis");
+		panelThesis.add(btnCheckThesis);
+		
+		JSeparator separator_1 = new JSeparator();
+		separator_1.setPreferredSize(new Dimension(0, 10));
+		separator_1.setOrientation(SwingConstants.VERTICAL);
+		panelThesis.add(separator_1);
+		
+		JLabel lblTeacherName = new JLabel("Teacher name");
+		lblTeacherName.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		panelThesis.add(lblTeacherName);
+		
+		JSeparator separator_2 = new JSeparator();
+		separator_2.setPreferredSize(new Dimension(0, 10));
+		separator_2.setOrientation(SwingConstants.VERTICAL);
+		panelThesis.add(separator_2);
+		
+		JButton btnCheckReviews = new JButton("Check the reviews");
+		panelThesis.add(btnCheckReviews);
+		
+		JSeparator separator_3 = new JSeparator();
+		separator_3.setPreferredSize(new Dimension(0, 100));
+		separator_3.setOrientation(SwingConstants.VERTICAL);
+		panelThesis.add(separator_3);
+		
+		JPanel panel = new JPanel();
+		panel.setPreferredSize(new Dimension(400, 20));
+		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panel.setMaximumSize(new Dimension(400, 20));
+		panelThesis.add(panel);
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		
+		txtFilepath = new JTextField();
+		txtFilepath.setColumns(1);
+		txtFilepath.setText("Select file");
+		panel.add(txtFilepath);
+		
+		JButton btnBrowse = new JButton("Browse");
+		btnBrowse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(
+					    "Pdf", "pdf");
+				fileChooser.setFileFilter(filter);
+				fileChooser.showOpenDialog(null);
+				File pfile = fileChooser.getSelectedFile();
+				try {
+					txtFilepath.setText(pfile.getCanonicalPath());
+				} catch (IOException ex) {
+				}
+			}
+		});
+		btnBrowse.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel.add(btnBrowse);
+		
+		JSeparator separator_4 = new JSeparator();
+		separator_4.setPreferredSize(new Dimension(0, 10));
+		separator_4.setOrientation(SwingConstants.VERTICAL);
+		panelThesis.add(separator_4);
+		
+		JButton btnUpload = new JButton("Upload thesis");
+		panelThesis.add(btnUpload);
+		
+		JSeparator separator_5 = new JSeparator();
+		separator_5.setMinimumSize(new Dimension(20, 100));
+		separator_5.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		separator_5.setOrientation(SwingConstants.VERTICAL);
+		separator_5.setPreferredSize(new Dimension(20, 100));
+		panelThesis.add(separator_5);
 		
 		JPanel panelMail = new JPanel();
 		tabbedPane.addTab("Mail", null, panelMail, null);
@@ -125,6 +217,11 @@ public class StudentGUI {
 		mnFile.add(mntmLogOut);
 		
 		JMenuItem mntmExit = new JMenuItem("Exit");
+		mntmExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
 		mnFile.add(mntmExit);
 		
 		JMenu mnEdit = new JMenu("Edit");
