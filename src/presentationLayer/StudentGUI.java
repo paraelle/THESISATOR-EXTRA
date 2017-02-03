@@ -1,6 +1,8 @@
 package presentationLayer;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
@@ -9,14 +11,24 @@ import javax.swing.JMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import java.awt.Color;
 import javax.swing.border.MatteBorder;
 import javax.swing.ImageIcon;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JScrollPane;
+import java.awt.Dimension;
+import javax.swing.border.EmptyBorder;
+
+
+
 
 public class StudentGUI {
 
 	private JFrame frmThesisatorextra;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -60,6 +72,39 @@ public class StudentGUI {
 		
 		JPanel panelThesisTopic = new JPanel();
 		tabbedPane.addTab("Thesis topic", null, panelThesisTopic, null);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		scrollPane.setPreferredSize(new Dimension(750, 400));
+		panelThesisTopic.add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"adsdad asdasd aasd asdasd asd asd", "g sdfg sdfg d", "Reserve"},
+				{"sa dasd asda d dasda sfgdfgdfsg sdfg sdfgs dfgdfg sdg", "gdfs gdsfgs", "Reserve"},
+			},
+			new String[] {
+				"Thesis topic", "Teacher name", "Reserve"
+			}
+		));
+		table.getColumnModel().getColumn(0).setResizable(false);
+		table.getColumnModel().getColumn(0).setPreferredWidth(500);
+		table.getColumnModel().getColumn(1).setResizable(false);
+		table.getColumnModel().getColumn(1).setPreferredWidth(200);
+		table.getColumnModel().getColumn(2).setResizable(false);
+		table.getColumnModel().getColumn(2).setPreferredWidth(100);
+		table.getColumn("Reserve").setCellRenderer(new JButtonRenderer());
+		table.getColumn("Reserve").setCellEditor(new JButtonEditor(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	JRowButton button = (JRowButton)e.getSource();
+            	String thesis = (String) table.getModel().getValueAt(button.getRow(), 0);
+            	String name = (String) table.getModel().getValueAt(button.getRow(), 1);
+            	JOptionPane.showMessageDialog(null, new String("Topic: " + thesis + "\nName: " + name));
+            }
+        }));
 		
 		JPanel panelDefenseSchedule = new JPanel();
 		tabbedPane.addTab("Defense schedule", null, panelDefenseSchedule, null);
