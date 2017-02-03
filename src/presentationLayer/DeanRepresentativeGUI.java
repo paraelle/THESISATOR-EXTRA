@@ -14,7 +14,7 @@ import java.awt.Color;
 import javax.swing.border.MatteBorder;
 import javax.swing.ImageIcon;
 
-public class DeanRepresentative {
+public class DeanRepresentativeGUI {
 
 	private JFrame frmThesisatorextra;
 
@@ -37,7 +37,7 @@ public class DeanRepresentative {
 	/**
 	 * Create the application.
 	 */
-	public DeanRepresentative() {
+	public DeanRepresentativeGUI() {
 		initialize();
 	}
 

@@ -25,7 +25,7 @@ public class HeadOfTheDepartmentGUI {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					HeadOfTheDepartmentGUI window = new ReviewerGUI();
+					HeadOfTheDepartmentGUI window = new HeadOfTheDepartmentGUI();
 					window.frmThesisatorextra.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -37,7 +37,7 @@ public class HeadOfTheDepartmentGUI {
 	/**
 	 * Create the application.
 	 */
-	public ReviewerGUI() {
+	public HeadOfTheDepartmentGUI() {
 		initialize();
 	}
 
