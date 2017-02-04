@@ -1,22 +1,36 @@
 package presentationLayer;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.BoxLayout;
+import javax.swing.SwingConstants;
+import java.awt.Component;
 
 public class HeadOfTheDepartmentGUI {
 
 	private JFrame frmThesisatorextra;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -60,6 +74,75 @@ public class HeadOfTheDepartmentGUI {
 		
 		JPanel panelThesisTopics = new JPanel();
 		tabbedPane.addTab("Thesis topics", null, panelThesisTopics, null);
+		panelThesisTopics.setLayout(new BoxLayout(panelThesisTopics, BoxLayout.Y_AXIS));
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		scrollPane.setPreferredSize(new Dimension(750, 400));
+		panelThesisTopics.add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"adsdad asdasd aasd asdasd asd asd", "g sdfg sdfg d", Boolean.TRUE},
+				{"sa dasd asda d dasda sfgdfgdfsg sdfg sdfgs dfgdfg sdg", "gdfs gdsfgs", Boolean.TRUE},
+			},
+			new String[] {
+				"Thesis topic", "Teacher name", "Reserve"
+			}
+		){
+			boolean[] columnEditables = new boolean[] {
+				false, false, true
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+			@Override
+			public Class getColumnClass(int column) {
+				return getValueAt(0, column).getClass();
+			}
+		});
+		table.getColumnModel().getColumn(0).setResizable(false);
+		table.getColumnModel().getColumn(0).setPreferredWidth(500);
+		table.getColumnModel().getColumn(1).setResizable(false);
+		table.getColumnModel().getColumn(1).setPreferredWidth(200);
+		table.getColumnModel().getColumn(2).setResizable(false);
+		table.getColumnModel().getColumn(2).setPreferredWidth(100);
+		
+		JPanel panel = new JPanel();
+		panel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		panelThesisTopics.add(panel);
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		
+		JButton btnApprove = new JButton("Approve");
+		btnApprove.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				for(int i = 0;i < table.getRowCount();i++){
+					table.getValueAt(i, 2);
+					//approve topic
+				}
+			}
+		});
+		btnApprove.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel.add(btnApprove);
+		
+		JButton btnDecline = new JButton("Decline");
+		btnDecline.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				for(int i = 0;i < table.getRowCount();i++){
+					table.getValueAt(i, 2);
+					//decline topic
+				}
+			}
+		});
+		
+		JSeparator separator = new JSeparator();
+		separator.setMaximumSize(new Dimension(20, 32767));
+		separator.setPreferredSize(new Dimension(50, 5));
+		separator.setOrientation(SwingConstants.VERTICAL);
+		panel.add(separator);
+		panel.add(btnDecline);
 		
 		JPanel panelDefenseSchedule = new JPanel();
 		tabbedPane.addTab("Defense schedule", null, panelDefenseSchedule, null);
@@ -80,6 +163,11 @@ public class HeadOfTheDepartmentGUI {
 		mnFile.add(mntmLogOut);
 		
 		JMenuItem mntmExit = new JMenuItem("Exit");
+		mntmExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
 		mnFile.add(mntmExit);
 		
 		JMenu mnEdit = new JMenu("Edit");

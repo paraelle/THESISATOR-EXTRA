@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
@@ -100,7 +102,14 @@ public class StudentGUI {
 			new String[] {
 				"Thesis topic", "Teacher name", "Reserve"
 			}
-		));
+		) {
+			boolean[] columnEditables = new boolean[] {
+				false, false, true
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
 		table.getColumnModel().getColumn(0).setResizable(false);
 		table.getColumnModel().getColumn(0).setPreferredWidth(500);
 		table.getColumnModel().getColumn(1).setResizable(false);
@@ -195,6 +204,16 @@ public class StudentGUI {
 		panelThesis.add(separator_4);
 		
 		JButton btnUpload = new JButton("Upload thesis");
+		btnUpload.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Path path = Paths.get(txtFilepath.getText());
+				File pfile = path.toFile();
+				if(pfile.exists())
+					JOptionPane.showMessageDialog(null, new String("Choosen file: " + pfile.getName()));
+				else
+					JOptionPane.showMessageDialog(null, new String("File does not exixts"));
+			}
+		});
 		panelThesis.add(btnUpload);
 		
 		JSeparator separator_5 = new JSeparator();

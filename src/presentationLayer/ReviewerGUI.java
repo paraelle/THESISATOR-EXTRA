@@ -1,22 +1,34 @@
 package presentationLayer;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.ImageIcon;
+import java.awt.Component;
 
 public class ReviewerGUI {
 
 	private JFrame frmThesisatorextra;
+	private JTable table;
+	private JTable tableTheses;
 
 	/**
 	 * Launch the application.
@@ -61,11 +73,78 @@ public class ReviewerGUI {
 		JPanel panelThesisTopics = new JPanel();
 		tabbedPane.addTab("Thesis topics", null, panelThesisTopics, null);
 		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		scrollPane.setPreferredSize(new Dimension(750, 400));
+		panelThesisTopics.add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"adsdad asdasd aasd asdasd asd asd", "g sdfg sdfg d"},
+				{"sa dasd asda d dasda sfgdfgdfsg sdfg sdfgs dfgdfg sdg", "gdfs gdsfgs"},
+			},
+			new String[] {
+				"Thesis topic", "Teacher name"
+			}
+		) {
+			boolean[] columnEditables = new boolean[] {
+				false, false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		table.getColumnModel().getColumn(0).setResizable(false);
+		table.getColumnModel().getColumn(0).setPreferredWidth(500);
+		table.getColumnModel().getColumn(1).setResizable(false);
+		table.getColumnModel().getColumn(1).setPreferredWidth(200);
+		
 		JPanel panelDefenseSchedule = new JPanel();
 		tabbedPane.addTab("Defense schedule", null, panelDefenseSchedule, null);
 		
 		JPanel panelTheses = new JPanel();
 		tabbedPane.addTab("Theses", null, panelTheses, null);
+		
+		JScrollPane scrollPaneTheses = new JScrollPane();
+		scrollPaneTheses.setPreferredSize(new Dimension(600, 400));
+		panelTheses.add(scrollPaneTheses);
+		
+		tableTheses = new JTable();
+		scrollPaneTheses.setViewportView(tableTheses);
+		tableTheses.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"adsdad asdasd aasd asdasd asd asd", "Adam Nieuk", "More"},
+				{"sa dasd asda d dasda sfgdfgdfsg sdfg sdfgs dfgdfg sdg", "Kuba Pasta", "More"},
+			},
+			new String[] {
+				"Thesis topic", "Student name", "Reserve"
+			}
+		) {
+			boolean[] columnEditables = new boolean[] {
+				false, false, true
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		tableTheses.getColumnModel().getColumn(0).setResizable(false);
+		tableTheses.getColumnModel().getColumn(0).setPreferredWidth(500);
+		tableTheses.getColumnModel().getColumn(1).setResizable(false);
+		tableTheses.getColumnModel().getColumn(1).setPreferredWidth(200);
+		tableTheses.getColumnModel().getColumn(2).setResizable(false);
+		tableTheses.getColumnModel().getColumn(2).setPreferredWidth(100);
+		tableTheses.getColumn("Reserve").setCellRenderer(new JButtonRenderer());
+		tableTheses.getColumn("Reserve").setCellEditor(new JButtonEditor(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	JRowButton button = (JRowButton)e.getSource();
+            	String thesis = (String) tableTheses.getModel().getValueAt(button.getRow(), 0);
+            	String name = (String) tableTheses.getModel().getValueAt(button.getRow(), 1);
+            	JOptionPane.showMessageDialog(null, new String("Topic: " + thesis + "\nName: " + name));
+            }
+        }));
 		
 		JPanel panelMail = new JPanel();
 		tabbedPane.addTab("Mail", null, panelMail, null);
@@ -80,6 +159,11 @@ public class ReviewerGUI {
 		mnFile.add(mntmLogOut);
 		
 		JMenuItem mntmExit = new JMenuItem("Exit");
+		mntmExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
 		mnFile.add(mntmExit);
 		
 		JMenu mnEdit = new JMenu("Edit");

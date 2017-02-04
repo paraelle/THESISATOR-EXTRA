@@ -1,22 +1,31 @@
 package presentationLayer;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.ImageIcon;
 
 public class DeanRepresentativeGUI {
 
 	private JFrame frmThesisatorextra;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -61,6 +70,34 @@ public class DeanRepresentativeGUI {
 		JPanel panelThesisTopics = new JPanel();
 		tabbedPane.addTab("Thesis topics", null, panelThesisTopics, null);
 		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		scrollPane.setPreferredSize(new Dimension(750, 400));
+		panelThesisTopics.add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"adsdad asdasd aasd asdasd asd asd", "g sdfg sdfg d"},
+				{"sa dasd asda d dasda sfgdfgdfsg sdfg sdfgs dfgdfg sdg", "gdfs gdsfgs"},
+			},
+			new String[] {
+				"Thesis topic", "Teacher name"
+			}
+		) {
+			boolean[] columnEditables = new boolean[] {
+				false, false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		table.getColumnModel().getColumn(0).setResizable(false);
+		table.getColumnModel().getColumn(0).setPreferredWidth(500);
+		table.getColumnModel().getColumn(1).setResizable(false);
+		table.getColumnModel().getColumn(1).setPreferredWidth(200);
+		
 		JPanel panelDefenseSchedule = new JPanel();
 		tabbedPane.addTab("Defense schedule", null, panelDefenseSchedule, null);
 		
@@ -80,6 +117,11 @@ public class DeanRepresentativeGUI {
 		mnFile.add(mntmLogOut);
 		
 		JMenuItem mntmExit = new JMenuItem("Exit");
+		mntmExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
 		mnFile.add(mntmExit);
 		
 		JMenu mnEdit = new JMenu("Edit");
