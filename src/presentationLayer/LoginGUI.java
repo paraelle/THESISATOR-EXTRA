@@ -108,7 +108,7 @@ public class LoginGUI {
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String login = textLogin.getText();
-				String password = textPassword.getText();
+				String password = new String(textPassword.getPassword());
 				try {
 					User user = server.login(login, password);
 					switch(user.getType()){
@@ -133,6 +133,7 @@ public class LoginGUI {
 						break;
 					}
 				} catch (Exception  e) {
+					e.printStackTrace();
 					JOptionPane.showMessageDialog(null, "Connection error!");
 				} 
 			}
