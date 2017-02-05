@@ -69,7 +69,7 @@ public class StudentGUI {
 	 * @throws Exception 
 	 */
 	public StudentGUI(String[] args) throws Exception {
-		user = new User(args[0],args[1],Integer.parseInt(args[2]),args[3],args[4]);
+		user = new User(args[0],args[1],Integer.parseInt(args[2]),args[3],args[4],Integer.parseInt(args[5]));
 		initialize();
 	}
 

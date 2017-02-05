@@ -26,11 +26,14 @@ public class User {
 		System.setSecurityManager(new RMISecurityManager());
 		Context namingContext = new InitialContext();
 		server = (Server)namingContext.lookup("rmi://localhost/Server");
-
 	}
 
 	public int getId() {
 		return this.id;
+	}
+	
+	public int getDepartment() {
+		return this.departmentNumber;
 	}
 
 	public void setId(int id) {

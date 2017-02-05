@@ -21,7 +21,6 @@ import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.rmi.RMISecurityManager;
-import java.rmi.RemoteException;
 import java.awt.event.ActionEvent;
 
 public class LoginGUI {
@@ -115,26 +114,26 @@ public class LoginGUI {
 					User user = server.login(login, password);
 					switch(user.getType()){
 					case STUDENT:
-						StudentGUI.main(new String[]{user.getUsername(), user.getPassword(), Integer.toString(user.getId()), user.getType().toString(), user.getName()});
+						StudentGUI.main(new String[]{user.getUsername(), user.getPassword(), Integer.toString(user.getId()), user.getType().toString(), user.getName(), Integer.toString(user.getDepartment())});
 						frmThesisatorExtra.dispatchEvent(new WindowEvent(frmThesisatorExtra, WindowEvent.WINDOW_CLOSING));
 						break;
 					case REVIEWER:
-						ReviewerGUI.main(new String[]{user.getUsername(), user.getPassword(), Integer.toString(user.getId()), user.getType().toString(), user.getName()});
+						ReviewerGUI.main(new String[]{user.getUsername(), user.getPassword(), Integer.toString(user.getId()), user.getType().toString(), user.getName(), Integer.toString(user.getDepartment())});
 						frmThesisatorExtra.dispatchEvent(new WindowEvent(frmThesisatorExtra, WindowEvent.WINDOW_CLOSING));
 						break;
 					case DEAN_REPRESENTATIVE:
-						DeanRepresentativeGUI.main(new String[]{user.getUsername(), user.getPassword(), Integer.toString(user.getId()), user.getType().toString(), user.getName()});
+						DeanRepresentativeGUI.main(new String[]{user.getUsername(), user.getPassword(), Integer.toString(user.getId()), user.getType().toString(), user.getName(), Integer.toString(user.getDepartment())});
 						frmThesisatorExtra.dispatchEvent(new WindowEvent(frmThesisatorExtra, WindowEvent.WINDOW_CLOSING));
 						break;
 					case HEAD_OF_THE_DEPARTMENT:
-						HeadOfTheDepartmentGUI.main(new String[]{user.getUsername(), user.getPassword(), Integer.toString(user.getId()), user.getType().toString(), user.getName()});
+						HeadOfTheDepartmentGUI.main(new String[]{user.getUsername(), user.getPassword(), Integer.toString(user.getId()), user.getType().toString(), user.getName(), Integer.toString(user.getDepartment())});
 						frmThesisatorExtra.dispatchEvent(new WindowEvent(frmThesisatorExtra, WindowEvent.WINDOW_CLOSING));
 						break;
 					default:
 						JOptionPane.showMessageDialog(null, "User does not exixts");
 						break;
 					}
-				} catch (RemoteException  e) {
+				} catch (Exception  e) {
 					JOptionPane.showMessageDialog(null, "Connection error!");
 				} 
 			}
