@@ -126,6 +126,68 @@ public class ServerImpl implements Server {
 		}
 		return list;
 	}
+	
+	public void approveTopic(int topicID) throws Exception {
+		PreparedStatement pstmt = null;
+		try{
+			String SQL = "UPDATE [Topic] SET isApproved = 1 WHERE topicID = ?";
+			pstmt = con.prepareStatement(SQL);
+			pstmt.setInt(1, topicID);
+		} finally {
+			pstmt.close();
+		}
+	}
+	
+	public void reserveTopic(int topicID, int userID) throws Exception {
+		PreparedStatement pstmt = null;
+		try{
+			String SQL = "UPDATE [Topic] SET StudentID = ? WHERE topicID = ?";
+			pstmt = con.prepareStatement(SQL);
+			pstmt.setInt(1, userID);
+			pstmt.setInt(2, topicID);
+		} finally {
+			pstmt.close();
+		}
+	}
+	
+	public void uploadThesis(String thesisName, String content, int userID, int topicID) throws Exception {
+		PreparedStatement pstmt = null;
+		try{
+			String SQL = "INSERT INTO [dbo].[Thesis] (ThesisName, Content, StudentID, TopicID) VALUES (?, ?, ?, ?); ";
+			pstmt = con.prepareStatement(SQL);
+			pstmt.setString(1, thesisName);
+			pstmt.setString(2, content);
+			pstmt.setInt(3, userID);
+			pstmt.setInt(4, topicID);
+		} finally {
+			pstmt.close();
+		}
+	}
+	
+//	public List<Teacher> getTeacherList() {
+//		List<Topic> list = new ArrayList<>();
+//		Topic topic = null;
+//		
+//		Statement stmt = null;
+//		ResultSet rs = null;
+//		
+//		try {
+//			String SQL = "SELECT TopicID, TopicName, [Employee].Name AS 'Supervisor', Degree, [Department].Name AS 'Department' FROM [Topic] " +
+//					"JOIN [Employee] ON [Topic].SupervisorID = [Employee].EmployeeID JOIN [Department] ON [Employee].DepartmentNumber = [Department].Number WHERE isApproved = 0";
+//			stmt = con.createStatement();
+//			rs = stmt.executeQuery(SQL);
+//			
+//			while(rs.next()) {
+//				topic = new Topic(rs.getString("TopicName"), rs.getString("Supervisor"), rs.getInt("TopicID"));
+//				list.add(topic);
+//			}
+//		} finally {
+//			stmt.close();
+//			rs.close();
+//		}
+//		return list;
+//	}
+//	}
 
 	// test
 	public static void main(String[] args) throws Exception {

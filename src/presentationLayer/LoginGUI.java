@@ -134,9 +134,9 @@ public class LoginGUI {
 						JOptionPane.showMessageDialog(null, "User does not exixts");
 						break;
 					}
-				} catch (RemoteException e) {
+				} catch (RemoteException  e) {
 					JOptionPane.showMessageDialog(null, "Connection error!");
-				}
+				} 
 			}
 		});
 		btnLogin.setAlignmentY(Component.BOTTOM_ALIGNMENT);
