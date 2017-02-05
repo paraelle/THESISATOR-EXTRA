@@ -25,7 +25,7 @@ public class User {
 		System.setProperty("java.security.policy", "client.policy");
 		System.setSecurityManager(new RMISecurityManager());
 		Context namingContext = new InitialContext();
-		server = (Server)namingContext.lookup("rmi://localhost/Server");
+		server = (Server)namingContext.lookup("rmi://localhost/THESISATOR-SERVER");
 	}
 
 	public int getId() {

@@ -19,7 +19,6 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 import java.rmi.RMISecurityManager;
 import java.awt.event.ActionEvent;
 
@@ -53,7 +52,7 @@ public class LoginGUI {
 		System.setProperty("java.security.policy", "client.policy");
 		System.setSecurityManager(new RMISecurityManager());
 		Context namingContext = new InitialContext();
-		server = (Server)namingContext.lookup("rmi://localhost/Server");
+		server = (Server)namingContext.lookup("rmi://localhost/THESISATOR-SERVER");
 		initialize();
 	}
 
@@ -115,19 +114,19 @@ public class LoginGUI {
 					switch(user.getType()){
 					case STUDENT:
 						StudentGUI.main(new String[]{user.getUsername(), user.getPassword(), Integer.toString(user.getId()), user.getType().toString(), user.getName(), Integer.toString(user.getDepartment())});
-						frmThesisatorExtra.dispatchEvent(new WindowEvent(frmThesisatorExtra, WindowEvent.WINDOW_CLOSING));
+						frmThesisatorExtra.dispose();
 						break;
 					case REVIEWER:
 						ReviewerGUI.main(new String[]{user.getUsername(), user.getPassword(), Integer.toString(user.getId()), user.getType().toString(), user.getName(), Integer.toString(user.getDepartment())});
-						frmThesisatorExtra.dispatchEvent(new WindowEvent(frmThesisatorExtra, WindowEvent.WINDOW_CLOSING));
+						frmThesisatorExtra.dispose();
 						break;
 					case DEAN_REPRESENTATIVE:
 						DeanRepresentativeGUI.main(new String[]{user.getUsername(), user.getPassword(), Integer.toString(user.getId()), user.getType().toString(), user.getName(), Integer.toString(user.getDepartment())});
-						frmThesisatorExtra.dispatchEvent(new WindowEvent(frmThesisatorExtra, WindowEvent.WINDOW_CLOSING));
+						frmThesisatorExtra.dispose();
 						break;
 					case HEAD_OF_THE_DEPARTMENT:
 						HeadOfTheDepartmentGUI.main(new String[]{user.getUsername(), user.getPassword(), Integer.toString(user.getId()), user.getType().toString(), user.getName(), Integer.toString(user.getDepartment())});
-						frmThesisatorExtra.dispatchEvent(new WindowEvent(frmThesisatorExtra, WindowEvent.WINDOW_CLOSING));
+						frmThesisatorExtra.dispose();
 						break;
 					default:
 						JOptionPane.showMessageDialog(null, "User does not exixts");

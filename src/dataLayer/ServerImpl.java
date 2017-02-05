@@ -1,6 +1,7 @@
 package dataLayer;
 
 import java.io.FileInputStream;
+import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +12,10 @@ import buisnessLayer.UserType;
 import buisnessLayer.User;
 import buisnessLayer.Topic;
 
-public class ServerImpl implements Server {
+public class ServerImpl implements Server, Serializable {
 	private Connection con;
-	// • Sql Server's TCP/IP should be enabled first for this
-	// • A 'SQL' user should be created and GRANTED access to DB
+	// ï¿½ Sql Server's TCP/IP should be enabled first for this
+	// ï¿½ A 'SQL' user should be created and GRANTED access to DB
 
 	public ServerImpl() throws Exception {
 
