@@ -89,7 +89,7 @@ public class HeadOfTheDepartmentGUI {
 				{"sa dasd asda d dasda sfgdfgdfsg sdfg sdfgs dfgdfg sdg", "gdfs gdsfgs", Boolean.TRUE},
 			},
 			new String[] {
-				"Thesis topic", "Teacher name", "Reserve"
+				"Thesis topic", "Teacher name", "Approve"
 			}
 		){
 			boolean[] columnEditables = new boolean[] {
@@ -108,7 +108,7 @@ public class HeadOfTheDepartmentGUI {
 		table.getColumnModel().getColumn(1).setResizable(false);
 		table.getColumnModel().getColumn(1).setPreferredWidth(200);
 		table.getColumnModel().getColumn(2).setResizable(false);
-		table.getColumnModel().getColumn(2).setPreferredWidth(100);
+		table.getColumnModel().getColumn(2).setPreferredWidth(50);
 		
 		JPanel panel = new JPanel();
 		panel.setAlignmentX(Component.RIGHT_ALIGNMENT);

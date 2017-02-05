@@ -3,7 +3,6 @@ package presentationLayer;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import javax.swing.JMenuBar;
@@ -17,18 +16,25 @@ import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import java.awt.Color;
 import java.awt.Dimension;
-
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ImageIcon;
 import java.awt.Component;
+import java.awt.CardLayout;
+import javax.swing.JLabel;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import java.awt.Font;
+import javax.swing.SwingConstants;
+import javax.swing.JTextArea;
 
 public class ReviewerGUI {
 
 	private JFrame frmThesisatorextra;
 	private JTable table;
 	private JTable tableTheses;
+	private JTextArea textFieldReview;
 
 	/**
 	 * Launch the application.
@@ -106,10 +112,14 @@ public class ReviewerGUI {
 		
 		JPanel panelTheses = new JPanel();
 		tabbedPane.addTab("Theses", null, panelTheses, null);
+		panelTheses.setLayout(new CardLayout(0, 0));
+		
+		JPanel panelThesesMain = new JPanel();
+		panelTheses.add(panelThesesMain, "Main");
 		
 		JScrollPane scrollPaneTheses = new JScrollPane();
+		panelThesesMain.add(scrollPaneTheses);
 		scrollPaneTheses.setPreferredSize(new Dimension(600, 400));
-		panelTheses.add(scrollPaneTheses);
 		
 		tableTheses = new JTable();
 		scrollPaneTheses.setViewportView(tableTheses);
@@ -129,6 +139,123 @@ public class ReviewerGUI {
 				return columnEditables[column];
 			}
 		});
+		
+		JPanel panelThesesMore = new JPanel();
+		panelTheses.add(panelThesesMore, "More");
+		panelThesesMore.setLayout(new BoxLayout(panelThesesMore, BoxLayout.Y_AXIS));
+		
+		JLabel lblMoreThesisTopic = new JLabel("Thesis topic");
+		lblMoreThesisTopic.setFont(new Font("Tahoma", Font.PLAIN, 40));
+		panelThesesMore.add(lblMoreThesisTopic);
+		
+		JSeparator separator = new JSeparator();
+		separator.setOrientation(SwingConstants.VERTICAL);
+		panelThesesMore.add(separator);
+		
+		JLabel lblMoreStudentName = new JLabel("Student name");
+		lblMoreStudentName.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		panelThesesMore.add(lblMoreStudentName);
+		
+		JSeparator separator_1 = new JSeparator();
+		separator_1.setPreferredSize(new Dimension(0, 40));
+		separator_1.setOrientation(SwingConstants.VERTICAL);
+		panelThesesMore.add(separator_1);
+		
+		JPanel panelMoreButtons = new JPanel();
+		panelMoreButtons.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panelThesesMore.add(panelMoreButtons);
+		panelMoreButtons.setLayout(new BoxLayout(panelMoreButtons, BoxLayout.X_AXIS));
+		
+		JButton btnMoreOpen = new JButton("Open");
+		panelMoreButtons.add(btnMoreOpen);
+		
+		JSeparator separator_4 = new JSeparator();
+		separator_4.setPreferredSize(new Dimension(20, 0));
+		separator_4.setMaximumSize(new Dimension(20, 0));
+		separator_4.setOrientation(SwingConstants.VERTICAL);
+		panelMoreButtons.add(separator_4);
+		
+		JButton btnMoreMakeReview = new JButton("Make a review");
+		panelMoreButtons.add(btnMoreMakeReview);
+		
+		JSeparator separator_5 = new JSeparator();
+		separator_5.setMaximumSize(new Dimension(20, 0));
+		separator_5.setPreferredSize(new Dimension(20, 0));
+		panelMoreButtons.add(separator_5);
+		
+		JButton btnMoreDownload = new JButton("Download");
+		panelMoreButtons.add(btnMoreDownload);
+		
+		JSeparator separator_2 = new JSeparator();
+		separator_2.setOrientation(SwingConstants.VERTICAL);
+		panelThesesMore.add(separator_2);
+		
+		JButton btnMoreBack = new JButton("Back");
+		btnMoreBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CardLayout cardLayout = (CardLayout) panelTheses.getLayout();
+            	cardLayout.show(panelTheses, "Main");
+			}
+		});
+		panelThesesMore.add(btnMoreBack);
+		
+		JSeparator separator_3 = new JSeparator();
+		separator_3.setMinimumSize(new Dimension(20, 0));
+		separator_3.setPreferredSize(new Dimension(20, 70));
+		separator_3.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		separator_3.setOrientation(SwingConstants.VERTICAL);
+		panelThesesMore.add(separator_3);
+		
+		JPanel panelThesesMakeReview = new JPanel();
+		panelTheses.add(panelThesesMakeReview, "Review");
+		panelThesesMakeReview.setLayout(new BoxLayout(panelThesesMakeReview, BoxLayout.Y_AXIS));
+		
+		JLabel lblThesesMakeReviewText = new JLabel("Make a review");
+		lblThesesMakeReviewText.setFont(new Font("Tahoma", Font.PLAIN, 40));
+		panelThesesMakeReview.add(lblThesesMakeReviewText);
+		
+		JLabel lblThesesMakeReviewTopic = new JLabel("Topic");
+		lblThesesMakeReviewTopic.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		panelThesesMakeReview.add(lblThesesMakeReviewTopic);
+		
+		btnMoreMakeReview.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				lblThesesMakeReviewTopic.setText(lblMoreThesisTopic.getText());
+				CardLayout cardLayout = (CardLayout) panelTheses.getLayout();
+				cardLayout.show(panelTheses, "Review");
+			}
+		});
+		
+		JScrollPane scrollPaneMakeReview = new JScrollPane();
+		panelThesesMakeReview.add(scrollPaneMakeReview);
+		
+		textFieldReview = new JTextArea();
+		scrollPaneMakeReview.setViewportView(textFieldReview);
+		textFieldReview.setColumns(10);
+		
+		JPanel panel = new JPanel();
+		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panelThesesMakeReview.add(panel);
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		
+		JButton btnThesesMakeReviewCancel = new JButton("Cancel");
+		btnThesesMakeReviewCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CardLayout cardLayout = (CardLayout) panelTheses.getLayout();
+            	cardLayout.show(panelTheses, "More");
+			}
+		});
+		btnThesesMakeReviewCancel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel.add(btnThesesMakeReviewCancel);
+		
+		JSeparator separator_6 = new JSeparator();
+		separator_6.setMaximumSize(new Dimension(10, 0));
+		separator_6.setOrientation(SwingConstants.VERTICAL);
+		panel.add(separator_6);
+		
+		JButton btnThesesMakeReviewFinish = new JButton("Finish");
+		btnThesesMakeReviewFinish.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel.add(btnThesesMakeReviewFinish);
 		tableTheses.getColumnModel().getColumn(0).setResizable(false);
 		tableTheses.getColumnModel().getColumn(0).setPreferredWidth(500);
 		tableTheses.getColumnModel().getColumn(1).setResizable(false);
@@ -140,9 +267,11 @@ public class ReviewerGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
             	JRowButton button = (JRowButton)e.getSource();
-            	String thesis = (String) tableTheses.getModel().getValueAt(button.getRow(), 0);
-            	String name = (String) tableTheses.getModel().getValueAt(button.getRow(), 1);
-            	JOptionPane.showMessageDialog(null, new String("Topic: " + thesis + "\nName: " + name));
+            	lblMoreThesisTopic.setText((String) tableTheses.getModel().getValueAt(button.getRow(), 0));
+            	lblMoreStudentName.setText((String) tableTheses.getModel().getValueAt(button.getRow(), 1));
+            	CardLayout cardLayout = (CardLayout) panelTheses.getLayout();
+            	cardLayout.show(panelTheses, "More");
+            	//JOptionPane.showMessageDialog(null, new String("Topic: " + thesis + "\nName: " + name));
             }
         }));
 		
