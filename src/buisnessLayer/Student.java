@@ -1,7 +1,7 @@
 package buisnessLayer;
 
 public class Student {
-	private int id;
+	private int studentID;
 	private String name;
 	private int userID;
 	private String topicName;
@@ -12,17 +12,17 @@ public class Student {
 	
 	public Student(int id, String name, int userID) {
 		super();
-		this.id = id;
+		this.studentID = id;
 		this.name = name;
 		this.userID = userID;
 	}
 
 	public int getId() {
-		return id;
+		return studentID;
 	}
 
 	public void setId(int id) {
-		this.id = id;
+		this.studentID = id;
 	}
 
 	public String getName() {
@@ -42,7 +42,7 @@ public class Student {
 	public String toString() {
 		return String
 				.format("Student [id=%s, name=%s, userID=%s]",
-						id, name, userID);
+						studentID, name, userID);
 	}
 	
 	
