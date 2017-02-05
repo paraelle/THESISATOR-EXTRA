@@ -1,0 +1,6 @@
+server=localhost
+port=1433
+user=admin
+password=admin
+database=ThesisatorExtra
+Url=jdbc:sqlserver
