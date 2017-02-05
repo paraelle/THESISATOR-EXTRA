@@ -14,7 +14,7 @@ import buisnessLayer.Topic;
 import buisnessLayer.Thesis;
 
 public class ServerImpl implements Server, Serializable {
-	private Connection con;
+	transient private Connection con;
 	// � Sql Server's TCP/IP should be enabled first for this
 	// � A 'SQL' user should be created and GRANTED access to DB
 

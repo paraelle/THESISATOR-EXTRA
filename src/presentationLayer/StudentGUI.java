@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
@@ -24,6 +26,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import buisnessLayer.Topic;
 import buisnessLayer.User;
 
 import javax.swing.JScrollPane;
@@ -75,8 +78,9 @@ public class StudentGUI {
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @throws Exception 
 	 */
-	private void initialize() {
+	private void initialize() throws Exception {
 		frmThesisatorextra = new JFrame();
 		frmThesisatorextra.setResizable(false);
 		frmThesisatorextra.setTitle("THESISATOR-EXTRA");
@@ -98,13 +102,17 @@ public class StudentGUI {
 		scrollPane.setPreferredSize(new Dimension(750, 400));
 		panelThesisTopic.add(scrollPane);
 		
+		List<Topic> listTopics = user.getServer().getAvailableTopics(user.getDepartment());
+		ArrayList<String[]> list = new ArrayList<String[]>();
+		for(Topic topic : listTopics){
+			String[] row = {topic.getTopic(),topic.getSupervisor(),"Reserved"};
+			list.add(row);
+		}
+		
 		table = new JTable();
 		scrollPane.setViewportView(table);
 		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"adsdad asdasd aasd asdasd asd asd", "g sdfg sdfg d", "Reserve"},
-				{"sa dasd asda d dasda sfgdfgdfsg sdfg sdfgs dfgdfg sdg", "gdfs gdsfgs", "Reserve"},
-			},
+				list.toArray(new String[list.size()][]),
 			new String[] {
 				"Thesis topic", "Teacher name", "Reserve"
 			}
@@ -264,7 +272,7 @@ public class StudentGUI {
 		JSeparator mnSeparator = new JSeparator();
 		menuBar.add(mnSeparator);
 		
-		JMenu mnHello = new JMenu("Hello, UserName");
+		JMenu mnHello = new JMenu(new String("Hello, " + user.getName()));
 		mnHello.setIcon(new ImageIcon("Icon.png"));
 		mnHello.setBorderPainted(true);
 		mnHello.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));

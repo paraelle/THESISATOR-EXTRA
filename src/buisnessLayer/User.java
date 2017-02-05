@@ -32,6 +32,10 @@ public class User {
 		return this.id;
 	}
 	
+	public Server getServer() {
+		return this.server;
+	}
+	
 	public int getDepartment() {
 		return this.departmentNumber;
 	}
