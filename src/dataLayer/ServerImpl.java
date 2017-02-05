@@ -1,22 +1,18 @@
 package dataLayer;
 
 import java.io.FileInputStream;
-import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.sql.ResultSetMetaData;
 
 import buisnessLayer.Server;
 import buisnessLayer.UserType;
 import buisnessLayer.User;
+import buisnessLayer.Topic;
 
 public class ServerImpl implements Server {
 	private Connection con;
-//	ResultSetMetaData rsmd;
 	// • Sql Server's TCP/IP should be enabled first for this
 	// • A 'SQL' user should be created and GRANTED access to DB
 
@@ -24,7 +20,7 @@ public class ServerImpl implements Server {
 
 		// get DB properties
 		Properties props = new Properties();
-		props.load(new FileInputStream("properties.txt"));
+		props.load(new FileInputStream("database.properties"));
 
 		String server = props.getProperty("server");
 		String user = props.getProperty("user");
@@ -41,14 +37,16 @@ public class ServerImpl implements Server {
 	}
 
 	@Override
-	public User login(String login, String password) throws RemoteException {
+	public User login(String login, String password) throws Exception {
 		User currentUser = null;
+		PreparedStatement pstmt = null;
+		ResultSet  rs = null;
 		try {
 			String SQL = "SELECT Type, UserID FROM [User] WHERE Username = ? AND Password = ?";
-			PreparedStatement pstmt = con.prepareStatement(SQL);
+			pstmt = con.prepareStatement(SQL);
 			pstmt.setString(1, login);
 			pstmt.setString(2, password);
-			ResultSet rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			System.out.println("# - Query Executed");
 
 			if (rs.next()) {
@@ -74,83 +72,60 @@ public class ServerImpl implements Server {
 					return currentUser;
 				}
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		}finally {
+			pstmt.close();
+			rs.close();
 		}
 		return currentUser;
 	}
-
-//	public List<Topic> getAllTopicList() throws RemoteException {
-//		Map<String, List<String>> topicTeacherList = new HashMap<String, List<String>>();
-//
-//		try {
-//			List<String> allTopicList = new ArrayList<>();
-//			List<String> teacherList = new ArrayList<>();
-//			List<String> topicList = new ArrayList<>();
-//			String SQL = "SELECT * FROM [Topic] JOIN [Employee] ON [Topic].[SupervisorID] = [Employee].[EmployeeID] ORDER BY EmployeeID";
-//			Statement s = con.createStatement();
-//			ResultSet r = s.executeQuery(SQL);
-//
-//			while (r.next()) {
-//				allTopicList.add(r.getString("TopicName"));
-//				teacherList.add(r.getString("Name"));
-//			}
-//
-//			for (int i = 0; i < teacherList.size(); i++) {
-//
-//				String currentTeacherName = teacherList.get(i);
-//				topicList.add(allTopicList.get(i));
-//
-//				if (!currentTeacherName.equals(teacherList.get(i + 1))) {
-//					topicTeacherList.put(currentTeacherName, topicList);
-//					topicList.clear();
-//
-//				}
-//			}
-//
-//			r.close();
-//			s.close();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		return topicTeacherList;
-//	}
-//
-//	// not reserved
-//	public Map<String, List<String>> getAvailableTopicList() throws RemoteException {
-//		Map<String, List<String>> topicTeacherList = new HashMap<String, List<String>>();
-//		try {
-//			List<String> allTopicList = new ArrayList<>();
-//			List<String> teacherList = new ArrayList<>();
-//			List<String> topicList = new ArrayList<>();
-//			String SQL = "SELECT * FROM [Topic] WHERE StudentID IS NULL";
-//			Statement s = con.createStatement();
-//			ResultSet r = s.executeQuery(SQL);
-//
-//			while (r.next()) {
-//				allTopicList.add(r.getString("TopicName"));
-//				teacherList.add(r.getString("Name"));
-//			}
-//
-//			for (int i = 0; i < teacherList.size(); i++) {
-//
-//				String currentTeacherName = teacherList.get(i);
-//				topicList.add(allTopicList.get(i));
-//
-//				if (!currentTeacherName.equals(teacherList.get(i + 1))) {
-//					topicTeacherList.put(currentTeacherName, topicList);
-//					topicList.clear();
-//
-//				}
-//			}
-//
-//			r.close();
-//			s.close();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		return topicTeacherList;
-//	}
+	
+	public List<Topic> getApprovedTopics() throws Exception {
+		List<Topic> list = new ArrayList<>();
+		Topic topic = null;
+		
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			String SQL = "SELECT TopicID, TopicName, [Employee].Name AS 'Supervisor', Degree, [Department].Name AS 'Department' FROM [Topic] " +
+					"JOIN [Employee] ON [Topic].SupervisorID = [Employee].EmployeeID JOIN [Department] ON [Employee].DepartmentNumber = [Department].Number WHERE isApproved = 1";
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(SQL);
+			
+			while(rs.next()) {
+				topic = new Topic(rs.getString("TopicName"), rs.getString("Supervisor"), rs.getInt("TopicID"));
+				list.add(topic);
+			}
+		} finally {
+			stmt.close();
+			rs.close();
+		}
+		return list;
+	}
+	
+	public List<Topic> getNotApprovedTopics() throws Exception {
+		List<Topic> list = new ArrayList<>();
+		Topic topic = null;
+		
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			String SQL = "SELECT TopicID, TopicName, [Employee].Name AS 'Supervisor', Degree, [Department].Name AS 'Department' FROM [Topic] " +
+					"JOIN [Employee] ON [Topic].SupervisorID = [Employee].EmployeeID JOIN [Department] ON [Employee].DepartmentNumber = [Department].Number WHERE isApproved = 0";
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(SQL);
+			
+			while(rs.next()) {
+				topic = new Topic(rs.getString("TopicName"), rs.getString("Supervisor"), rs.getInt("TopicID"));
+				list.add(topic);
+			}
+		} finally {
+			stmt.close();
+			rs.close();
+		}
+		return list;
+	}
 
 	// test
 	public static void main(String[] args) throws Exception {
@@ -158,16 +133,6 @@ public class ServerImpl implements Server {
 
 		System.out.println(server.login("HOD8", "HOD8"));
 
-		// Map<String, List<String> > al = server.getAllTopicList();
-		// for ( String topic : al) {
-		// System.out.println(al);
-		// }
 
-		// System.out.println();
-
-		// al = server.getAvailableTopicList();
-		// for ( String topic : al) {
-		// System.out.println(topic);
-		// }
 	}
 }

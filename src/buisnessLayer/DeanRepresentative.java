@@ -1,5 +1,5 @@
 package buisnessLayer;
 
-public class DeanRepresentative extends User {
+public class DeanRepresentative {
 
 }

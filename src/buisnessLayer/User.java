@@ -14,16 +14,17 @@ public class User {
 	private String name;
 
 	public User(String username, String password, int id, String type, String name) throws Exception {
-		System.setProperty("java.security.policy", "client.policy");
-		System.setSecurityManager(new RMISecurityManager());
-		Context namingContext = new InitialContext();
-		server = (Server)namingContext.lookup("rmi://localhost/Server");
 		super();
 		this.username = username;
 		this.password = password;
 		this.userID = id;
 		this.type = UserType.fromString(type);
 		this.name = name;
+		System.setProperty("java.security.policy", "client.policy");
+		System.setSecurityManager(new RMISecurityManager());
+		Context namingContext = new InitialContext();
+		server = (Server)namingContext.lookup("rmi://localhost/Server");
+
 	}
 
 	public int getId() {

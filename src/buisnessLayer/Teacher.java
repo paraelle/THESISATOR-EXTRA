@@ -1,6 +1,6 @@
 package buisnessLayer;
 
-public class Teacher extends User {
+public class Teacher {
 	
 	
 	private int department;
