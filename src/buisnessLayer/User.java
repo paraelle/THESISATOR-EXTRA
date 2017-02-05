@@ -12,14 +12,16 @@ public class User {
 	private String password;
 	private UserType type;
 	private String name;
+	private int departmentNumber;
 
-	public User(String username, String password, int id, String type, String name) throws Exception {
+	public User(String username, String password, int id, String type, String name, int departmentNumber) throws Exception {
 		super();
 		this.username = username;
 		this.password = password;
 		this.userID = id;
 		this.type = UserType.fromString(type);
 		this.name = name;
+		this.departmentNumber = departmentNumber;
 		System.setProperty("java.security.policy", "client.policy");
 		System.setSecurityManager(new RMISecurityManager());
 		Context namingContext = new InitialContext();

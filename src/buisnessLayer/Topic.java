@@ -4,12 +4,14 @@ public class Topic {
 	private int topicID;
 	private String topicName;
 	private String supervisorName;	
+	private int departmentNumber;
 
-	public Topic(String topicName, String supervisorName, int topicId) throws Exception {
+	public Topic(String topicName, String supervisorName, int topicId, int departmentNumber) throws Exception {
 		super();
 		this.topicID = topicId;
 		this.supervisorName = supervisorName;
 		this.topicName = topicName;
+		this.departmentNumber = departmentNumber;
 	}
 
 	public int getID() {
