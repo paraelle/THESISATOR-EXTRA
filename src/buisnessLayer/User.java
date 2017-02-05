@@ -18,7 +18,6 @@ public class User {
 		System.setSecurityManager(new RMISecurityManager());
 		Context namingContext = new InitialContext();
 		server = (Server)namingContext.lookup("rmi://localhost/Server");
-		super();
 		this.username = username;
 		this.password = password;
 		this.userID = id;
@@ -36,6 +35,10 @@ public class User {
 
 	public String getUsername() {
 		return this.username;
+	}
+	
+	public String getPassword() {
+		return this.password;
 	}
 	
 	public String getName() {

@@ -23,6 +23,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import buisnessLayer.User;
+
 import javax.swing.JScrollPane;
 import java.awt.Dimension;
 import javax.swing.border.EmptyBorder;
@@ -43,6 +46,7 @@ public class StudentGUI {
 	private JFrame frmThesisatorextra;
 	private JTable table;
 	private JTextField txtFilepath;
+	private User user;
 
 	/**
 	 * Launch the application.
@@ -51,7 +55,7 @@ public class StudentGUI {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					StudentGUI window = new StudentGUI();
+					StudentGUI window = new StudentGUI(args);
 					window.frmThesisatorextra.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -62,8 +66,10 @@ public class StudentGUI {
 
 	/**
 	 * Create the application.
+	 * @throws Exception 
 	 */
-	public StudentGUI() {
+	public StudentGUI(String[] args) throws Exception {
+		user = new User(args[0],args[1],Integer.parseInt(args[2]),args[3],args[4]);
 		initialize();
 	}
 
