@@ -129,7 +129,7 @@ public class ReviewerGUI {
 				{"sa dasd asda d dasda sfgdfgdfsg sdfg sdfgs dfgdfg sdg", "Kuba Pasta", "More"},
 			},
 			new String[] {
-				"Thesis topic", "Student name", "Reserve"
+				"Thesis topic", "Student name", "More"
 			}
 		) {
 			boolean[] columnEditables = new boolean[] {
@@ -139,6 +139,12 @@ public class ReviewerGUI {
 				return columnEditables[column];
 			}
 		});
+		tableTheses.getColumnModel().getColumn(0).setResizable(false);
+		tableTheses.getColumnModel().getColumn(0).setPreferredWidth(500);
+		tableTheses.getColumnModel().getColumn(1).setResizable(false);
+		tableTheses.getColumnModel().getColumn(1).setPreferredWidth(200);
+		tableTheses.getColumnModel().getColumn(2).setResizable(false);
+		tableTheses.getColumnModel().getColumn(2).setPreferredWidth(100);
 		
 		JPanel panelThesesMore = new JPanel();
 		panelTheses.add(panelThesesMore, "More");
@@ -256,14 +262,8 @@ public class ReviewerGUI {
 		JButton btnThesesMakeReviewFinish = new JButton("Finish");
 		btnThesesMakeReviewFinish.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel.add(btnThesesMakeReviewFinish);
-		tableTheses.getColumnModel().getColumn(0).setResizable(false);
-		tableTheses.getColumnModel().getColumn(0).setPreferredWidth(500);
-		tableTheses.getColumnModel().getColumn(1).setResizable(false);
-		tableTheses.getColumnModel().getColumn(1).setPreferredWidth(200);
-		tableTheses.getColumnModel().getColumn(2).setResizable(false);
-		tableTheses.getColumnModel().getColumn(2).setPreferredWidth(100);
-		tableTheses.getColumn("Reserve").setCellRenderer(new JButtonRenderer());
-		tableTheses.getColumn("Reserve").setCellEditor(new JButtonEditor(new ActionListener() {
+		tableTheses.getColumn("More").setCellRenderer(new JButtonRenderer());
+		tableTheses.getColumn("More").setCellEditor(new JButtonEditor(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
             	JRowButton button = (JRowButton)e.getSource();

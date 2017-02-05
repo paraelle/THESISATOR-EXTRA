@@ -30,6 +30,7 @@ import java.awt.Component;
 public class HeadOfTheDepartmentGUI {
 
 	private JFrame frmThesisatorextra;
+	private JTable tableToApprove;
 	private JTable table;
 
 	/**
@@ -85,15 +86,49 @@ public class HeadOfTheDepartmentGUI {
 		scrollPane.setViewportView(table);
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
-				{"adsdad asdasd aasd asdasd asd asd", "g sdfg sdfg d", Boolean.TRUE},
-				{"sa dasd asda d dasda sfgdfgdfsg sdfg sdfgs dfgdfg sdg", "gdfs gdsfgs", Boolean.TRUE},
+				{"adsdad asdasd aasd asdasd asd asd", "g sdfg sdfg d"},
+				{"sa dasd asda d dasda sfgdfgdfsg sdfg sdfgs dfgdfg sdg", "gdfs gdsfgs"},
 			},
 			new String[] {
-				"Thesis topic", "Teacher name", "Approve"
+				"Thesis topic", "Teacher name"
 			}
-		){
+		) {
 			boolean[] columnEditables = new boolean[] {
-				false, false, true
+				false, false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		table.getColumnModel().getColumn(0).setResizable(false);
+		table.getColumnModel().getColumn(0).setPreferredWidth(500);
+		table.getColumnModel().getColumn(1).setResizable(false);
+		table.getColumnModel().getColumn(1).setPreferredWidth(200);
+		
+		JPanel panelDefenseSchedule = new JPanel();
+		tabbedPane.addTab("Defense schedule", null, panelDefenseSchedule, null);
+		
+		JPanel panelTopicsToApprove = new JPanel();
+		tabbedPane.addTab("Topics to approve", null, panelTopicsToApprove, null);
+		
+		JScrollPane scrollPaneToApprove = new JScrollPane();
+		scrollPaneToApprove.setBorder(new EmptyBorder(0, 0, 0, 0));
+		scrollPaneToApprove.setPreferredSize(new Dimension(750, 350));
+		panelTopicsToApprove.add(scrollPaneToApprove);
+		
+		tableToApprove = new JTable();
+		scrollPaneToApprove.setViewportView(tableToApprove);
+		tableToApprove.setModel(new DefaultTableModel(
+				new Object[][] {
+					{"adsdad asdasd aasd asdasd asd asd", "g sdfg sdfg d", Boolean.TRUE},
+					{"sa dasd asda d dasda sfgdfgdfsg sdfg sdfgs dfgdfg sdg", "gdfs gdsfgs", Boolean.TRUE},
+				},
+				new String[] {
+						"Thesis topic", "Teacher name", "Approve"
+				}
+				){
+			boolean[] columnEditables = new boolean[] {
+					false, false, true
 			};
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -103,23 +138,22 @@ public class HeadOfTheDepartmentGUI {
 				return getValueAt(0, column).getClass();
 			}
 		});
-		table.getColumnModel().getColumn(0).setResizable(false);
-		table.getColumnModel().getColumn(0).setPreferredWidth(500);
-		table.getColumnModel().getColumn(1).setResizable(false);
-		table.getColumnModel().getColumn(1).setPreferredWidth(200);
-		table.getColumnModel().getColumn(2).setResizable(false);
-		table.getColumnModel().getColumn(2).setPreferredWidth(50);
+		tableToApprove.getColumnModel().getColumn(0).setResizable(false);
+		tableToApprove.getColumnModel().getColumn(0).setPreferredWidth(500);
+		tableToApprove.getColumnModel().getColumn(1).setResizable(false);
+		tableToApprove.getColumnModel().getColumn(1).setPreferredWidth(200);
+		tableToApprove.getColumnModel().getColumn(2).setResizable(false);
+		tableToApprove.getColumnModel().getColumn(2).setPreferredWidth(50);
 		
 		JPanel panel = new JPanel();
-		panel.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		panelThesisTopics.add(panel);
+		panelTopicsToApprove.add(panel);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		
 		JButton btnApprove = new JButton("Approve");
 		btnApprove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for(int i = 0;i < table.getRowCount();i++){
-					table.getValueAt(i, 2);
+				for(int i = 0;i < tableToApprove.getRowCount();i++){
+					tableToApprove.getValueAt(i, 2);
 					//approve topic
 				}
 			}
@@ -130,25 +164,19 @@ public class HeadOfTheDepartmentGUI {
 		JButton btnDecline = new JButton("Decline");
 		btnDecline.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				for(int i = 0;i < table.getRowCount();i++){
-					table.getValueAt(i, 2);
+				for(int i = 0;i < tableToApprove.getRowCount();i++){
+					tableToApprove.getValueAt(i, 2);
 					//decline topic
 				}
 			}
 		});
 		
 		JSeparator separator = new JSeparator();
-		separator.setMaximumSize(new Dimension(20, 32767));
-		separator.setPreferredSize(new Dimension(50, 5));
+		separator.setMaximumSize(new Dimension(20, 0));
+		separator.setPreferredSize(new Dimension(50, 0));
 		separator.setOrientation(SwingConstants.VERTICAL);
 		panel.add(separator);
 		panel.add(btnDecline);
-		
-		JPanel panelDefenseSchedule = new JPanel();
-		tabbedPane.addTab("Defense schedule", null, panelDefenseSchedule, null);
-		
-		JPanel panelTheses = new JPanel();
-		tabbedPane.addTab("Theses", null, panelTheses, null);
 		
 		JPanel panelMail = new JPanel();
 		tabbedPane.addTab("Mail", null, panelMail, null);

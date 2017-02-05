@@ -13,6 +13,7 @@ import javax.swing.JTable;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -21,11 +22,17 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ImageIcon;
+import java.awt.CardLayout;
+import javax.swing.JButton;
+import javax.swing.BoxLayout;
+import java.awt.Component;
 
 public class DeanRepresentativeGUI {
 
 	private JFrame frmThesisatorextra;
 	private JTable table;
+	private JTable tableAssignReviewersTheses;
+	private JTable tableAssignReviewersTeachers;
 
 	/**
 	 * Launch the application.
@@ -101,8 +108,109 @@ public class DeanRepresentativeGUI {
 		JPanel panelDefenseSchedule = new JPanel();
 		tabbedPane.addTab("Defense schedule", null, panelDefenseSchedule, null);
 		
-		JPanel panelTheses = new JPanel();
-		tabbedPane.addTab("Theses", null, panelTheses, null);
+		JPanel panelAssignReviewers = new JPanel();
+		tabbedPane.addTab("Assign reviewers", null, panelAssignReviewers, null);
+		panelAssignReviewers.setLayout(new CardLayout(0, 0));
+		
+		JPanel panelAssignReviewersTheses = new JPanel();
+		panelAssignReviewers.add(panelAssignReviewersTheses, "Theses");
+		
+		JScrollPane scrollPaneAssignReviewersTheses = new JScrollPane();
+		panelAssignReviewersTheses.add(scrollPaneAssignReviewersTheses);
+		scrollPaneAssignReviewersTheses.setPreferredSize(new Dimension(700, 400));
+		
+		tableAssignReviewersTheses = new JTable();
+		tableAssignReviewersTheses.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, "Add Reviewer"},
+			},
+			new String[] {
+				"Topic", "Supervisor", "Reviewer", "Action"
+			}
+		) {
+			boolean[] columnEditables = new boolean[] {
+				false, false, false, true
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		tableAssignReviewersTheses.getColumnModel().getColumn(0).setResizable(false);
+		tableAssignReviewersTheses.getColumnModel().getColumn(0).setPreferredWidth(300);
+		tableAssignReviewersTheses.getColumnModel().getColumn(1).setResizable(false);
+		tableAssignReviewersTheses.getColumnModel().getColumn(1).setPreferredWidth(100);
+		tableAssignReviewersTheses.getColumnModel().getColumn(2).setResizable(false);
+		tableAssignReviewersTheses.getColumnModel().getColumn(2).setPreferredWidth(100);
+		tableAssignReviewersTheses.getColumnModel().getColumn(3).setResizable(false);
+		tableAssignReviewersTheses.getColumnModel().getColumn(3).setPreferredWidth(120);
+		tableAssignReviewersTheses.getColumnModel().getColumn(3).setMaxWidth(120);
+		scrollPaneAssignReviewersTheses.setViewportView(tableAssignReviewersTheses);
+		tableAssignReviewersTheses.getColumn("Action").setCellRenderer(new JButtonRenderer());
+		tableAssignReviewersTheses.getColumn("Action").setCellEditor(new JButtonEditor(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	CardLayout cardLayout = (CardLayout) panelAssignReviewers.getLayout();
+            	cardLayout.show(panelAssignReviewers, "Teachers");
+            	//JRowButton button = (JRowButton)e.getSource();
+            	//String thesis = (String) tableAssignReviewersTheses.getModel().getValueAt(button.getRow(), 0);
+            	//String name = (String) tableAssignReviewersTheses.getModel().getValueAt(button.getRow(), 1);
+            	//JOptionPane.showMessageDialog(null, new String("Topic: " + thesis + "\nName: " + name));
+            }
+        }));
+		
+		
+		
+		JPanel panelAssignReviewersTeachers = new JPanel();
+		panelAssignReviewers.add(panelAssignReviewersTeachers, "Teachers");
+		panelAssignReviewersTeachers.setLayout(new BoxLayout(panelAssignReviewersTeachers, BoxLayout.Y_AXIS));
+		
+		JScrollPane scrollPaneAssignReviewersTeachers = new JScrollPane();
+		scrollPaneAssignReviewersTeachers.setMaximumSize(new Dimension(700, 400));
+		scrollPaneAssignReviewersTeachers.setPreferredSize(new Dimension(700, 400));
+		panelAssignReviewersTeachers.add(scrollPaneAssignReviewersTeachers);
+		
+		tableAssignReviewersTeachers = new JTable();
+		tableAssignReviewersTeachers.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null, "Assign"},
+			},
+			new String[] {
+				"Name", "Degree", "Specialization", "Assigned thesis", "Assign"
+			}
+		) {
+			boolean[] columnEditables = new boolean[] {
+				false, false, false, false, false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		tableAssignReviewersTeachers.getColumnModel().getColumn(0).setResizable(false);
+		tableAssignReviewersTeachers.getColumnModel().getColumn(1).setResizable(false);
+		tableAssignReviewersTeachers.getColumnModel().getColumn(2).setResizable(false);
+		tableAssignReviewersTeachers.getColumnModel().getColumn(3).setResizable(false);
+		tableAssignReviewersTeachers.getColumnModel().getColumn(4).setResizable(false);
+		scrollPaneAssignReviewersTeachers.setViewportView(tableAssignReviewersTeachers);
+		
+		JButton btnBack = new JButton("Back");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CardLayout cardLayout = (CardLayout) panelAssignReviewers.getLayout();
+            	cardLayout.show(panelAssignReviewers, "Theses");
+			}
+		});
+		btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panelAssignReviewersTeachers.add(btnBack);
+		tableAssignReviewersTeachers.getColumn("Assign").setCellRenderer(new JButtonRenderer());
+		tableAssignReviewersTeachers.getColumn("Assign").setCellEditor(new JButtonEditor(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	JRowButton button = (JRowButton)e.getSource();
+            	String thesis = (String) tableAssignReviewersTeachers.getModel().getValueAt(button.getRow(), 0);
+            	String name = (String) tableAssignReviewersTeachers.getModel().getValueAt(button.getRow(), 1);
+            	JOptionPane.showMessageDialog(null, new String("Topic: " + thesis + "\nName: " + name));
+            }
+        }));
 		
 		JPanel panelMail = new JPanel();
 		tabbedPane.addTab("Mail", null, panelMail, null);
