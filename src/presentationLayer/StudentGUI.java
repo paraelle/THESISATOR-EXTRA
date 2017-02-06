@@ -40,6 +40,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.HeadlessException;
+
 import javax.swing.SwingConstants;
 
 
@@ -135,18 +137,22 @@ public class StudentGUI {
 		table.getColumn("Reserve").setCellEditor(new JButtonEditor(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	if(false){
-            		JOptionPane.showMessageDialog(null, "You already have reserved topic!");
-            	}else{
-            		JRowButton button = (JRowButton)e.getSource();
-            		String thesis = (String) table.getModel().getValueAt(button.getRow(), 0);
-            		try {
-						user.getServer().reserveTopic(thesis, user.getId());
-					} catch (Exception e1) {
-						JOptionPane.showMessageDialog(null, "Connection error!");
-						e1.printStackTrace();
+            	try {
+					if(user.getServer().getCurrentStudentTopic(user.getUserID()).equals(0)){
+						JOptionPane.showMessageDialog(null, "You already have reserved topic!");
+					}else{
+						JRowButton button = (JRowButton)e.getSource();
+						String thesis = (String) table.getModel().getValueAt(button.getRow(), 0);
+						try {
+							user.getServer().reserveTopic(thesis, user.getId());
+						} catch (Exception e1) {
+							JOptionPane.showMessageDialog(null, "Connection error!");
+							e1.printStackTrace();
+						}
 					}
-            	}
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(null, new String("File does not exixts"));
+				}
             }
         }));
 		
@@ -156,11 +162,12 @@ public class StudentGUI {
 		JPanel panelThesis = new JPanel();
 		tabbedPane.addTab("Thesis", null, panelThesis, null);
 		panelThesis.setLayout(new BoxLayout(panelThesis, BoxLayout.Y_AXIS));
-		if(false){
+		if(user.getServer().getCurrentStudentTopic(user.getUserID()).equals(0)){
     		panelThesis.setVisible(false);
     	}else{
-    		//user.getServer().
-			JLabel lblThesisTopic = new JLabel("Topic of the thesis");
+    		String teacher = user.getServer().getCurrentStudentTopic(user.getUserID()).getSupervisor();
+    		String thesis = user.getServer().getCurrentStudentTopic(user.getUserID()).getTopic();
+			JLabel lblThesisTopic = new JLabel(thesis);
 			lblThesisTopic.setFont(new Font("Tahoma", Font.PLAIN, 40));
 			panelThesis.add(lblThesisTopic);
 			
@@ -177,7 +184,7 @@ public class StudentGUI {
 			separator_1.setOrientation(SwingConstants.VERTICAL);
 			panelThesis.add(separator_1);
 			
-			JLabel lblTeacherName = new JLabel("Teacher name");
+			JLabel lblTeacherName = new JLabel(teacher);
 			lblTeacherName.setFont(new Font("Tahoma", Font.PLAIN, 20));
 			panelThesis.add(lblTeacherName);
 			
