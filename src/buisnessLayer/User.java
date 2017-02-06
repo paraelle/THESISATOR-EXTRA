@@ -1,5 +1,7 @@
 package buisnessLayer;
 
+import dataLayer.ServerImpl;
+
 //import java.rmi.RMISecurityManager;
 //import javax.naming.Context;
 //import javax.naming.InitialContext;
@@ -25,7 +27,7 @@ public class User {
 //		System.setProperty("java.security.policy", "client.policy");
 //		System.setSecurityManager(new RMISecurityManager());
 //		Context namingContext = new InitialContext();
-//		server = (Server)namingContext.lookup("rmi://localhost/THESISATOR-SERVER");
+		server = new ServerImpl();//(Server)namingContext.lookup("rmi://localhost/THESISATOR-SERVER");
 	}
 
 	public int getId() {

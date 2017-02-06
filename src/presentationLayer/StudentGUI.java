@@ -134,10 +134,18 @@ public class StudentGUI {
 		table.getColumn("Reserve").setCellEditor(new JButtonEditor(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	JRowButton button = (JRowButton)e.getSource();
-            	String thesis = (String) table.getModel().getValueAt(button.getRow(), 0);
-            	String name = (String) table.getModel().getValueAt(button.getRow(), 1);
-            	JOptionPane.showMessageDialog(null, new String("Topic: " + thesis + "\nName: " + name));
+            	if(false){
+            		JOptionPane.showMessageDialog(null, "You already have reserved topic!");
+            	}else{
+            		JRowButton button = (JRowButton)e.getSource();
+            		String thesis = (String) table.getModel().getValueAt(button.getRow(), 0);
+            		try {
+						user.getServer().reserveTopic(thesis, user.getId());
+					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(null, "Connection error!");
+						e1.printStackTrace();
+					}
+            	}
             }
         }));
 		
@@ -147,95 +155,99 @@ public class StudentGUI {
 		JPanel panelThesis = new JPanel();
 		tabbedPane.addTab("Thesis", null, panelThesis, null);
 		panelThesis.setLayout(new BoxLayout(panelThesis, BoxLayout.Y_AXIS));
-		
-		JLabel lblThesisTopic = new JLabel("Topic of the thesis");
-		lblThesisTopic.setFont(new Font("Tahoma", Font.PLAIN, 40));
-		panelThesis.add(lblThesisTopic);
-		
-		JSeparator separator = new JSeparator();
-		separator.setPreferredSize(new Dimension(0, 10));
-		separator.setOrientation(SwingConstants.VERTICAL);
-		panelThesis.add(separator);
-		
-		JButton btnCheckThesis = new JButton("Check Thesis");
-		panelThesis.add(btnCheckThesis);
-		
-		JSeparator separator_1 = new JSeparator();
-		separator_1.setPreferredSize(new Dimension(0, 10));
-		separator_1.setOrientation(SwingConstants.VERTICAL);
-		panelThesis.add(separator_1);
-		
-		JLabel lblTeacherName = new JLabel("Teacher name");
-		lblTeacherName.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		panelThesis.add(lblTeacherName);
-		
-		JSeparator separator_2 = new JSeparator();
-		separator_2.setPreferredSize(new Dimension(0, 10));
-		separator_2.setOrientation(SwingConstants.VERTICAL);
-		panelThesis.add(separator_2);
-		
-		JButton btnCheckReviews = new JButton("Check the reviews");
-		panelThesis.add(btnCheckReviews);
-		
-		JSeparator separator_3 = new JSeparator();
-		separator_3.setPreferredSize(new Dimension(0, 100));
-		separator_3.setOrientation(SwingConstants.VERTICAL);
-		panelThesis.add(separator_3);
-		
-		JPanel panel = new JPanel();
-		panel.setPreferredSize(new Dimension(400, 20));
-		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-		panel.setMaximumSize(new Dimension(400, 20));
-		panelThesis.add(panel);
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		
-		txtFilepath = new JTextField();
-		txtFilepath.setColumns(1);
-		txtFilepath.setText("Select file");
-		panel.add(txtFilepath);
-		
-		JButton btnBrowse = new JButton("Browse");
-		btnBrowse.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser fileChooser = new JFileChooser();
-				FileNameExtensionFilter filter = new FileNameExtensionFilter(
-					    "Pdf", "pdf");
-				fileChooser.setFileFilter(filter);
-				fileChooser.showOpenDialog(null);
-				File pfile = fileChooser.getSelectedFile();
-				try {
-					txtFilepath.setText(pfile.getCanonicalPath());
-				} catch (IOException ex) {
+		if(false){
+    		panelThesis.setVisible(false);
+    	}else{
+    		//user.getServer().
+			JLabel lblThesisTopic = new JLabel("Topic of the thesis");
+			lblThesisTopic.setFont(new Font("Tahoma", Font.PLAIN, 40));
+			panelThesis.add(lblThesisTopic);
+			
+			JSeparator separator = new JSeparator();
+			separator.setPreferredSize(new Dimension(0, 10));
+			separator.setOrientation(SwingConstants.VERTICAL);
+			panelThesis.add(separator);
+			
+			JButton btnCheckThesis = new JButton("Check Thesis");
+			panelThesis.add(btnCheckThesis);
+			
+			JSeparator separator_1 = new JSeparator();
+			separator_1.setPreferredSize(new Dimension(0, 10));
+			separator_1.setOrientation(SwingConstants.VERTICAL);
+			panelThesis.add(separator_1);
+			
+			JLabel lblTeacherName = new JLabel("Teacher name");
+			lblTeacherName.setFont(new Font("Tahoma", Font.PLAIN, 20));
+			panelThesis.add(lblTeacherName);
+			
+			JSeparator separator_2 = new JSeparator();
+			separator_2.setPreferredSize(new Dimension(0, 10));
+			separator_2.setOrientation(SwingConstants.VERTICAL);
+			panelThesis.add(separator_2);
+			
+			JButton btnCheckReviews = new JButton("Check the reviews");
+			panelThesis.add(btnCheckReviews);
+			
+			JSeparator separator_3 = new JSeparator();
+			separator_3.setPreferredSize(new Dimension(0, 100));
+			separator_3.setOrientation(SwingConstants.VERTICAL);
+			panelThesis.add(separator_3);
+			
+			JPanel panel = new JPanel();
+			panel.setPreferredSize(new Dimension(400, 20));
+			panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+			panel.setMaximumSize(new Dimension(400, 20));
+			panelThesis.add(panel);
+			panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+			
+			txtFilepath = new JTextField();
+			txtFilepath.setColumns(1);
+			txtFilepath.setText("Select file");
+			panel.add(txtFilepath);
+			
+			JButton btnBrowse = new JButton("Browse");
+			btnBrowse.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					JFileChooser fileChooser = new JFileChooser();
+					FileNameExtensionFilter filter = new FileNameExtensionFilter(
+						    "Pdf", "pdf");
+					fileChooser.setFileFilter(filter);
+					fileChooser.showOpenDialog(null);
+					File pfile = fileChooser.getSelectedFile();
+					try {
+						txtFilepath.setText(pfile.getCanonicalPath());
+					} catch (IOException ex) {
+					}
 				}
-			}
-		});
-		btnBrowse.setAlignmentX(Component.CENTER_ALIGNMENT);
-		panel.add(btnBrowse);
-		
-		JSeparator separator_4 = new JSeparator();
-		separator_4.setPreferredSize(new Dimension(0, 10));
-		separator_4.setOrientation(SwingConstants.VERTICAL);
-		panelThesis.add(separator_4);
-		
-		JButton btnUpload = new JButton("Upload thesis");
-		btnUpload.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				Path path = Paths.get(txtFilepath.getText());
-				File pfile = path.toFile();
-				if(pfile.exists())
-					JOptionPane.showMessageDialog(null, new String("Choosen file: " + pfile.getName()));
-				else
-					JOptionPane.showMessageDialog(null, new String("File does not exixts"));
-			}
-		});
-		panelThesis.add(btnUpload);
-		
-		JSeparator separator_5 = new JSeparator();
-		separator_5.setMinimumSize(new Dimension(20, 100));
-		separator_5.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		separator_5.setOrientation(SwingConstants.VERTICAL);
-		separator_5.setPreferredSize(new Dimension(20, 100));
-		panelThesis.add(separator_5);
+			});
+			btnBrowse.setAlignmentX(Component.CENTER_ALIGNMENT);
+			panel.add(btnBrowse);
+			
+			JSeparator separator_4 = new JSeparator();
+			separator_4.setPreferredSize(new Dimension(0, 10));
+			separator_4.setOrientation(SwingConstants.VERTICAL);
+			panelThesis.add(separator_4);
+			
+			JButton btnUpload = new JButton("Upload thesis");
+			btnUpload.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					Path path = Paths.get(txtFilepath.getText());
+					File pfile = path.toFile();
+					if(pfile.exists())
+						JOptionPane.showMessageDialog(null, new String("Choosen file: " + pfile.getName()));
+					else
+						JOptionPane.showMessageDialog(null, new String("File does not exixts"));
+				}
+			});
+			panelThesis.add(btnUpload);
+			
+			JSeparator separator_5 = new JSeparator();
+			separator_5.setMinimumSize(new Dimension(20, 100));
+			separator_5.setAlignmentX(Component.RIGHT_ALIGNMENT);
+			separator_5.setOrientation(SwingConstants.VERTICAL);
+			separator_5.setPreferredSize(new Dimension(20, 100));
+			panelThesis.add(separator_5);
+    	}
 		
 		JPanel panelMail = new JPanel();
 		tabbedPane.addTab("Mail", null, panelMail, null);
