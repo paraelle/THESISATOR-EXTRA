@@ -9,7 +9,7 @@ public class ServerRun {
 		try
 		{
 			System.out.println("Starting server");
-			ServerGuiConnection server = new ServerGuiConnection();
+			ServerImpl server = new ServerImpl();
 			System.out.println("Binding name");
 			Context namingContext = new InitialContext();
 			namingContext.rebind("rmi:THESISATOR-SERVER", server);
