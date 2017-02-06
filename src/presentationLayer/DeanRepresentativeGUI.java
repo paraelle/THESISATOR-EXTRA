@@ -196,13 +196,17 @@ public class DeanRepresentativeGUI {
 	        		tableAssignReviewersTeachers.getColumnModel().getColumn(0).setResizable(false);
 	        		tableAssignReviewersTeachers.getColumnModel().getColumn(1).setResizable(false);
 	        		tableAssignReviewersTeachers.getColumnModel().getColumn(2).setResizable(false);
-            
+	        		tableAssignReviewersTeachers.getColumn("Assign").setCellRenderer(new JButtonRenderer());
+	        		tableAssignReviewersTeachers.getColumn("Assign").setCellEditor(new JButtonEditor(new ActionListener() {
+	                    @Override
+	                    public void actionPerformed(ActionEvent e) {
+	                    	//assign reviewer
+	                    }}));
 	            } catch (Exception e1) {
 	            	JOptionPane.showMessageDialog(null, "Connection error!");
 	            	e1.printStackTrace();
 	            }
-            }
-        }));
+            }}));
 		
 		
 		
