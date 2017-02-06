@@ -1,8 +1,8 @@
 package buisnessLayer;
 
-import java.rmi.RMISecurityManager;
-import javax.naming.Context;
-import javax.naming.InitialContext;
+//import java.rmi.RMISecurityManager;
+//import javax.naming.Context;
+//import javax.naming.InitialContext;
 
 public class User {
 	protected Server server;
@@ -22,10 +22,10 @@ public class User {
 		this.type = UserType.fromString(type);
 		this.name = name;
 		this.departmentNumber = departmentNumber;
-		System.setProperty("java.security.policy", "client.policy");
-		System.setSecurityManager(new RMISecurityManager());
-		Context namingContext = new InitialContext();
-		server = (Server)namingContext.lookup("rmi://localhost/THESISATOR-SERVER");
+//		System.setProperty("java.security.policy", "client.policy");
+//		System.setSecurityManager(new RMISecurityManager());
+//		Context namingContext = new InitialContext();
+//		server = (Server)namingContext.lookup("rmi://localhost/THESISATOR-SERVER");
 	}
 
 	public int getId() {
