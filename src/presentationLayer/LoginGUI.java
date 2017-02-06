@@ -15,6 +15,8 @@ import java.awt.Insets;
 import javax.swing.border.EmptyBorder;
 import buisnessLayer.Server;
 import buisnessLayer.User;
+import dataLayer.ServerImpl;
+
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
@@ -49,10 +51,11 @@ public class LoginGUI {
 	 * @throws Exception 
 	 */
 	public LoginGUI() throws Exception {
-		System.setProperty("java.security.policy", "client.policy");
-		System.setSecurityManager(new RMISecurityManager());
-		Context namingContext = new InitialContext();
-		server = (Server)namingContext.lookup("rmi://localhost/THESISATOR-SERVER");
+		//System.setProperty("java.security.policy", "client.policy");
+		//System.setSecurityManager(new RMISecurityManager());
+		//Context namingContext = new InitialContext();
+		//server = (Server)namingContext.lookup("rmi://localhost/THESISATOR-SERVER");
+		server = new ServerImpl();
 		initialize();
 	}
 
