@@ -120,6 +120,7 @@ public class LoginGUI {
 						frmThesisatorExtra.dispose();
 						break;
 					case REVIEWER:
+					case SUPERVISOR:
 						ReviewerGUI.main(new String[]{user.getUsername(), user.getPassword(), Integer.toString(user.getId()), user.getType().toString(), user.getName(), Integer.toString(user.getDepartment())});
 						frmThesisatorExtra.dispose();
 						break;

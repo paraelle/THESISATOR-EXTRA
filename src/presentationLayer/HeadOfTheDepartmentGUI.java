@@ -3,6 +3,8 @@ package presentationLayer;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
@@ -21,6 +23,10 @@ import java.awt.Dimension;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
+
+import buisnessLayer.Topic;
+import buisnessLayer.User;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
@@ -32,6 +38,7 @@ public class HeadOfTheDepartmentGUI {
 	private JFrame frmThesisatorextra;
 	private JTable tableToApprove;
 	private JTable table;
+	private User user;
 
 	/**
 	 * Launch the application.
@@ -40,7 +47,7 @@ public class HeadOfTheDepartmentGUI {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					HeadOfTheDepartmentGUI window = new HeadOfTheDepartmentGUI();
+					HeadOfTheDepartmentGUI window = new HeadOfTheDepartmentGUI(args);
 					window.frmThesisatorextra.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -51,15 +58,18 @@ public class HeadOfTheDepartmentGUI {
 
 	/**
 	 * Create the application.
+	 * @throws Exception 
 	 */
-	public HeadOfTheDepartmentGUI() {
+	public HeadOfTheDepartmentGUI(String[] args) throws Exception {
+		user = new User(args[0],args[1],Integer.parseInt(args[2]),args[3],args[4],Integer.parseInt(args[5]));
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @throws Exception 
 	 */
-	private void initialize() {
+	private void initialize() throws Exception {
 		frmThesisatorextra = new JFrame();
 		frmThesisatorextra.setResizable(false);
 		frmThesisatorextra.setTitle("THESISATOR-EXTRA");
@@ -82,13 +92,17 @@ public class HeadOfTheDepartmentGUI {
 		scrollPane.setPreferredSize(new Dimension(750, 400));
 		panelThesisTopics.add(scrollPane);
 		
+		List<Topic> listTopics = user.getServer().getAvailableTopics(user.getDepartment());
+		ArrayList<String[]> list = new ArrayList<String[]>();
+		for(Topic topic : listTopics){
+			String[] row = {topic.getTopic(),topic.getSupervisor()};
+			list.add(row);
+		}
+		
 		table = new JTable();
 		scrollPane.setViewportView(table);
 		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"adsdad asdasd aasd asdasd asd asd", "g sdfg sdfg d"},
-				{"sa dasd asda d dasda sfgdfgdfsg sdfg sdfgs dfgdfg sdg", "gdfs gdsfgs"},
-			},
+				list.toArray(new String[list.size()][]),
 			new String[] {
 				"Thesis topic", "Teacher name"
 			}
@@ -116,19 +130,23 @@ public class HeadOfTheDepartmentGUI {
 		scrollPaneToApprove.setPreferredSize(new Dimension(750, 350));
 		panelTopicsToApprove.add(scrollPaneToApprove);
 		
+		List<Topic> listTopicsToApporve = user.getServer().getNotApprovedTopics(user.getDepartment());
+		ArrayList<Object[]> listToApprove = new ArrayList<Object[]>();
+		for(Topic topic : listTopicsToApporve){
+			Object[] row = {topic.getTopic(),topic.getSupervisor(), Boolean.TRUE};
+			listToApprove.add(row);
+		}
+		
 		tableToApprove = new JTable();
 		scrollPaneToApprove.setViewportView(tableToApprove);
 		tableToApprove.setModel(new DefaultTableModel(
-				new Object[][] {
-					{"adsdad asdasd aasd asdasd asd asd", "g sdfg sdfg d", Boolean.TRUE},
-					{"sa dasd asda d dasda sfgdfgdfsg sdfg sdfgs dfgdfg sdg", "gdfs gdsfgs", Boolean.TRUE},
-				},
-				new String[] {
-						"Thesis topic", "Teacher name", "Approve"
-				}
-				){
+				listToApprove.toArray(new Object[list.size()][]),
+			new String[] {
+				"Thesis topic", "Teacher name", "Approve"
+			}
+		) {
 			boolean[] columnEditables = new boolean[] {
-					false, false, true
+				false, false, true
 			};
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -152,9 +170,65 @@ public class HeadOfTheDepartmentGUI {
 		JButton btnApprove = new JButton("Approve");
 		btnApprove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for(int i = 0;i < tableToApprove.getRowCount();i++){
-					tableToApprove.getValueAt(i, 2);
-					//approve topic
+				try {
+					for(int i = 0;i < tableToApprove.getRowCount();i++){
+						if((Boolean)tableToApprove.getValueAt(i, 2))
+							user.getServer().approveTopic((String)tableToApprove.getValueAt(i, 0));
+					}
+					List<Topic> listTopicsToApporve = user.getServer().getNotApprovedTopics(user.getDepartment());
+					ArrayList<Object[]> listToApprove = new ArrayList<Object[]>();
+					for(Topic topic : listTopicsToApporve){
+						Object[] row = {topic.getTopic(),topic.getSupervisor(), Boolean.TRUE};
+						listToApprove.add(row);
+					}
+					tableToApprove.setModel(new DefaultTableModel(
+							listToApprove.toArray(new Object[listToApprove.size()][]),
+						new String[] {
+							"Thesis topic", "Teacher name", "Approve"
+						}
+					) {
+						boolean[] columnEditables = new boolean[] {
+							false, false, true
+						};
+						public boolean isCellEditable(int row, int column) {
+							return columnEditables[column];
+						}
+						@Override
+						public Class getColumnClass(int column) {
+							return getValueAt(0, column).getClass();
+						}
+					});
+					tableToApprove.getColumnModel().getColumn(0).setResizable(false);
+					tableToApprove.getColumnModel().getColumn(0).setPreferredWidth(500);
+					tableToApprove.getColumnModel().getColumn(1).setResizable(false);
+					tableToApprove.getColumnModel().getColumn(1).setPreferredWidth(200);
+					tableToApprove.getColumnModel().getColumn(2).setResizable(false);
+					tableToApprove.getColumnModel().getColumn(2).setPreferredWidth(50);
+					List<Topic> listTopics = user.getServer().getAvailableTopics(user.getDepartment());
+					ArrayList<String[]> list = new ArrayList<String[]>();
+					for(Topic topic : listTopics){
+						String[] row = {topic.getTopic(),topic.getSupervisor()};
+						list.add(row);
+					}
+					table.setModel(new DefaultTableModel(
+							list.toArray(new String[list.size()][]),
+						new String[] {
+							"Thesis topic", "Teacher name"
+						}
+					) {
+						boolean[] columnEditables = new boolean[] {
+							false, false
+						};
+						public boolean isCellEditable(int row, int column) {
+							return columnEditables[column];
+						}
+					});
+					table.getColumnModel().getColumn(0).setResizable(false);
+					table.getColumnModel().getColumn(0).setPreferredWidth(500);
+					table.getColumnModel().getColumn(1).setResizable(false);
+					table.getColumnModel().getColumn(1).setPreferredWidth(200);
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(null, "Connection error!");
 				}
 			}
 		});
@@ -165,7 +239,7 @@ public class HeadOfTheDepartmentGUI {
 		btnDecline.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				for(int i = 0;i < tableToApprove.getRowCount();i++){
-					tableToApprove.getValueAt(i, 2);
+					//tableToApprove.getValueAt(i, 2);
 					//decline topic
 				}
 			}

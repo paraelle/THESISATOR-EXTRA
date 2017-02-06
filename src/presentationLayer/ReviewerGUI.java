@@ -138,6 +138,8 @@ public class ReviewerGUI {
 		scrollPaneTheses.setPreferredSize(new Dimension(600, 400));
 		
 		List<Thesis> listThesis = user.getServer().getTopicsToReview(user.getUserID());
+		System.out.print("Size: ");/////////////////////////////////////////////////////////////////////////////////////////////
+		System.out.println(listThesis.size());/////////////////////////////////////////////////////////////////////////////////////////////
 		ArrayList<String[]> lisTmodel = new ArrayList<String[]>();
 		for(Thesis thesis : listThesis){
 			String[] row = {thesis.getThesisName(),thesis.getStudentName(),"More"};
@@ -145,7 +147,7 @@ public class ReviewerGUI {
 		}
 		
 		tableTheses = new JTable();
-		scrollPane.setViewportView(table);
+		scrollPane.setViewportView(tableTheses);
 		tableTheses.setModel(new DefaultTableModel(
 				lisTmodel.toArray(new String[lisTmodel.size()][]),
 			new String[] {
