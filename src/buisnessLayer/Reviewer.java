@@ -1,5 +1,5 @@
 package buisnessLayer;
 
-public class Reviewer extends Teacher {
+public class Reviewer {
 
 }
