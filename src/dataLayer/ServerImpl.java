@@ -13,7 +13,7 @@ import buisnessLayer.Topic;
 import buisnessLayer.Thesis;
 import buisnessLayer.Teacher;
 
-public class ServerImpl implements Server{
+public class ServerImpl implements Server {
 
 	private Connection con;
 	// Sql Server's TCP/IP should be enabled first for this
@@ -38,8 +38,8 @@ public class ServerImpl implements Server{
 		con = DriverManager.getConnection(jdbcUrl);
 		System.out.println("# - Connection Obtained");
 	}
-	
-	//returns null if current user (student) doesn NOT have topic reserved
+
+	// returns null if current user (student) doesn NOT have topic reserved
 	public Topic getCurrentStudentTopic(int userID) throws Exception {
 		int studentID = getStudentID(userID);
 		PreparedStatement pstmt2 = null;
@@ -54,11 +54,11 @@ public class ServerImpl implements Server{
 			if (rs.next())
 				return new Topic(rs.getString("TopicName"), rs.getString("Supervisor"), rs.getInt("Number"));
 			else
-				return null; 
+				return null;
 		} finally {
 			pstmt2.close();
 		}
-		
+
 	}
 
 	public int getStudentID(int userID) throws SQLException {
@@ -325,17 +325,17 @@ public class ServerImpl implements Server{
 		ResultSet rs = null;
 
 		try {
-			String SQL = " SELECT Employee.Name AS 'Reviewer', [Thesis].ThesisName, [Student].DepartmentID AS 'DepartmentNumber' FROM [Employee] JOIN  [Review] ON "
+			String SQL = " SELECT Employee.Name AS 'Reviewer', [Thesis].ThesisName, [Student].Name AS 'StudentName', DepartmentID "
+					+ "FROM [Employee] JOIN  [Review] ON "
 					+ "[Employee].EmployeeID = [Review].ReviewerID "
 					+ "JOIN  [Thesis] ON [Thesis].ThesisName = [Review].ThesisName "
-					+ "JOIN [Student] ON [Student].StudentID = [Thesis].StudentID WHERE ReviewerID = ?";
+					+ "JOIN [Student] ON [Student].StudentID = [Thesis].StudentID WHERE EmployeeID = ?";
 			pstmt = con.prepareStatement(SQL);
 			pstmt.setInt(1, userID);
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				thesis = new Thesis(rs.getString("ThesisName"), rs.getString("Reviewer"),
-						rs.getInt("DepartmentNumber"));
+				thesis = new Thesis(rs.getString("ThesisName"), rs.getString("StudentName"), rs.getInt("DepartmentID"));
 				list.add(thesis);
 			}
 		} finally {
@@ -401,51 +401,95 @@ public class ServerImpl implements Server{
 	}
 
 	// teachers to choose from to assign to a thesis as REVIEWER
-	public List<Teacher> getTeacherList(Thesis thesis) throws Exception {
+	public List<Teacher> getTeacherList(String thesis) throws Exception {
 		List<Teacher> list = new ArrayList<>();
 		Teacher teacher = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		PreparedStatement pstmt1 = null;
+		ResultSet rs1 = null;
+		int departmentID = 0;
+		int supervisorID = 0;
+		int HOD = 0;
+		int DR = 0;
 		try {
-			String SQL = "SELECT Name, Degree, EmployeeID FROM [Employee] WHERE [EmployeeID] <> ? AND [Employee].DepartmentNumber = ?";
-			pstmt = con.prepareStatement(SQL);
-			pstmt.setInt(1, thesis.getSupervisorID());
-			pstmt.setInt(2, thesis.getDepartmentNumber());
-			rs = pstmt.executeQuery();
 
-			while (rs.next()) {
-				teacher = new Teacher(rs.getString("Name"), rs.getString("Degree"), rs.getInt("EmployeeID"));
+			String SQL1 = "SELECT [Student].DepartmentID, SupervisorID, HeadOfDepartmentID, DeansRepresentativeID FROM "
+					+ "[Topic] JOIN [Thesis] ON [Topic].TopicName = [Thesis].ThesisName "
+					+ "JOIN [Student] ON [Student].StudentID = [Thesis].StudentID "
+					+ "JOIN [Department] ON [Department].Number = [Student].DepartmentID " + "WHERE TopicName = ?";
+			pstmt1 = con.prepareStatement(SQL1);
+			pstmt1.setString(1, thesis);
+			rs = pstmt1.executeQuery();
+			if (rs.next()) {
+				departmentID = rs.getInt("DepartmentID");
+				supervisorID = rs.getInt("SupervisorID");
+				HOD = rs.getInt("HeadOfDepartmentID");
+				DR = rs.getInt("DeansRepresentativeID");
+			}
+
+			String SQL = "SELECT Name, Degree, EmployeeID FROM [Employee] AS ET WHERE ET.DepartmentNumber = ?  "
+					+ "AND ET.EmployeeID <> ? " + "AND ET.EmployeeID <> ? " + "AND ET.EmployeeID <> ?";
+			pstmt = con.prepareStatement(SQL);
+			pstmt.setInt(1, departmentID);
+			pstmt.setInt(2, HOD);
+			pstmt.setInt(3, DR);
+			pstmt.setInt(4, supervisorID);
+			rs1 = pstmt.executeQuery();
+
+			while (rs1.next()) {
+				teacher = new Teacher(rs1.getString("Name"), rs1.getString("Degree"), rs1.getInt("EmployeeID"));
 				list.add(teacher);
 			}
 		} finally {
-			pstmt.close();
+			// pstmt.close();
+			// pstmt1.close();
 		}
 		return list;
 	}
 
-	public void assignReviewer(Thesis thesis, Teacher teacher) throws Exception {
+	public void assignReviewer(String thesis, String teacher) throws Exception {
 		PreparedStatement pstmt = null;
 		try {
 			String SQL = "INSERT INTO [Review] (ThesisName, ReviewerID) VALUES(?, ?)";
 			pstmt = con.prepareStatement(SQL);
-			pstmt.setString(1, thesis.getThesisName());
-			pstmt.setInt(2, teacher.getTeacherID());
+			pstmt.setString(1, thesis);
+			pstmt.setInt(2, getEmployeeID(teacher));
+			pstmt.executeUpdate();
+
+		} finally {
+			pstmt.close();
+		}
+	}
+
+	public void updateReviewer(String thesis, String teacher) throws Exception {
+		PreparedStatement pstmt = null;
+		try {
+			String SQL = "UPDATE [Review] SET ReviewerID = ? WHERE ThesisName = ?";
+			pstmt = con.prepareStatement(SQL);
+			pstmt.setString(2, thesis);
+			pstmt.setInt(1, getEmployeeID(teacher));
 			pstmt.executeUpdate();
 		} finally {
 			pstmt.close();
 		}
 	}
 
-	public void updateReviewer(Thesis thesis, Teacher teacher) throws Exception {
-		PreparedStatement pstmt = null;
+	// returns 0 if no such employee in DB
+	public int getEmployeeID(String name) throws Exception {
+		PreparedStatement pstmt2 = null;
+		ResultSet rs = null;
 		try {
-			String SQL = "UPDATE [Review] SET ReviewerID = ? WHERE ThesisName = ?";
-			pstmt = con.prepareStatement(SQL);
-			pstmt.setString(2, thesis.getThesisName());
-			pstmt.setInt(1, teacher.getTeacherID());
-			pstmt.executeUpdate();
+			String SQL = "SELECT EmployeeID FROM [Employee] WHERE Name = ?";
+			pstmt2 = con.prepareStatement(SQL);
+			pstmt2.setString(1, name);
+			rs = pstmt2.executeQuery();
+			if (rs.next())
+				return rs.getInt("EmployeeID");
+			else
+				return 0;
 		} finally {
-			pstmt.close();
+			pstmt2.close();
 		}
 	}
 
@@ -453,7 +497,7 @@ public class ServerImpl implements Server{
 	public static void main(String[] args) throws Exception {
 		ServerImpl server = new ServerImpl();
 
-//		System.out.println(server.login("DR8", "DR8"));
+		// System.out.println(server.login("DR8", "DR8"));
 		//
 		// for(Topic topic : server.getApprovedTopics())
 		// System.out.println(topic);
@@ -477,28 +521,26 @@ public class ServerImpl implements Server{
 
 		// server.uploadThesis("jestem arbuzem", 1);
 
-		 for(Thesis topic : server.getTopicsToReview(7))
-			 System.out.println(topic);
+		 for(Thesis topic : server.getTopicsToReview(7)) {
+		 System.out.println(topic.getThesisName());
+		 System.out.println(topic.getStudentName());
+		 }
 
 		// server.makeReview(4, "Mobile Zoo Guide", "jest super", 5.5f);
 
-		// Thesis teza = null;
 		//
-		// for(Thesis thesis : server.getThesesToAssignReviewers(4)){
-		// System.out.println(thesis);
-		// teza = thesis;
-		//
-		// }
-		//
-		// Teacher naucz = null;
-		// for(Teacher teacher : server.getTeacherList(teza)) {
-		// System.out.println(teacher);
-		//
-		// };
+//		 for(Thesis thesis : server.getThesesToAssignReviewers(4)){
+//		 System.out.println(thesis);
+//
+//		 }
 
-		// server.assignReviewer(teza, naucz);
-
-		// server.updateReviewer(teza, naucz);
+//		for (Teacher teacher : server.getTeacherList("This topic is reserved")) {
+//			System.out.println(teacher);
+//		};
+//
+////	server.assignReviewer(teza, naucz);
+//
+//		 server.updateReviewer("This topic is reserved", "Karol Andek");
 
 	}
 }

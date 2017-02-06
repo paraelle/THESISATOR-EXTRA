@@ -45,9 +45,9 @@ public interface Server extends Remote {
 	public List<Thesis> getThesesToAssignReviewers(int userID) throws Exception;
 		
 	//teachers to choose from to assign to a thesis as REVIEWER
-	public List<Teacher> getTeacherList(Thesis thesis) throws Exception;
+	public List<Teacher> getTeacherList(String thesis) throws Exception;
 	
-	public void assignReviewer(Thesis thesis, Teacher teacher) throws Exception;
+	public void assignReviewer(String thesis, String teacher) throws Exception;
 	
-	public void updateReviewer(Thesis thesis, Teacher teacher) throws Exception;
+	public void updateReviewer(String thesis, String teacher) throws Exception;
 }

@@ -56,7 +56,7 @@ public class Thesis {
 	}
 	
 	public String getStudentName() {
-		return this.getStudentName();	
+		return this.studentName;	
 	}
 	
 	public int getReviewerID() {
