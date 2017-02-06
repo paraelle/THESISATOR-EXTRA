@@ -138,8 +138,6 @@ public class ReviewerGUI {
 		scrollPaneTheses.setPreferredSize(new Dimension(600, 400));
 		
 		List<Thesis> listThesis = user.getServer().getTopicsToReview(user.getUserID());
-		System.out.print("Size: ");/////////////////////////////////////////////////////////////////////////////////////////////
-		System.out.println(listThesis.size());/////////////////////////////////////////////////////////////////////////////////////////////
 		ArrayList<String[]> lisTmodel = new ArrayList<String[]>();
 		for(Thesis thesis : listThesis){
 			String[] row = {thesis.getThesisName(),thesis.getStudentName(),"More"};

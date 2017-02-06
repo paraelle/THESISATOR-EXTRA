@@ -138,7 +138,7 @@ public class StudentGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
             	try {
-					if(user.getServer().getCurrentStudentTopic(user.getUserID()).equals(0)){
+					if(user.getServer().getCurrentStudentTopic(user.getUserID()) != null){
 						JOptionPane.showMessageDialog(null, "You already have reserved topic!");
 					}else{
 						JRowButton button = (JRowButton)e.getSource();
@@ -162,9 +162,10 @@ public class StudentGUI {
 		JPanel panelThesis = new JPanel();
 		tabbedPane.addTab("Thesis", null, panelThesis, null);
 		panelThesis.setLayout(new BoxLayout(panelThesis, BoxLayout.Y_AXIS));
-		if(user.getServer().getCurrentStudentTopic(user.getUserID()).equals(0)){
+		if(user.getServer().getCurrentStudentTopic(user.getUserID()) == null){
     		panelThesis.setVisible(false);
     	}else{
+    		panelThesis.setVisible(true);
     		String teacher = user.getServer().getCurrentStudentTopic(user.getUserID()).getSupervisor();
     		String thesis = user.getServer().getCurrentStudentTopic(user.getUserID()).getTopic();
 			JLabel lblThesisTopic = new JLabel(thesis);
