@@ -38,6 +38,28 @@ public class ServerImpl implements Server{
 		con = DriverManager.getConnection(jdbcUrl);
 		System.out.println("# - Connection Obtained");
 	}
+	
+	//returns null if current user (student) doesn NOT have topic reserved
+	public Topic getCurrentStudentTopic(int userID) throws Exception {
+		int studentID = getStudentID(userID);
+		PreparedStatement pstmt2 = null;
+		ResultSet rs = null;
+		try {
+			String SQL = "SELECT TopicName, [Employee].Name AS 'Supervisor', Number FROM [Topic] "
+					+ "JOIN [Employee] ON [Topic].SupervisorID = [Employee].EmployeeID "
+					+ "JOIN [Department] ON [Employee].DepartmentNumber = [Department].Number WHERE StudentID = ?";
+			pstmt2 = con.prepareStatement(SQL);
+			pstmt2.setInt(1, userID);
+			rs = pstmt2.executeQuery();
+			if (rs.next())
+				return new Topic(rs.getString("TopicName"), rs.getString("Supervisor"), rs.getInt("Number"));
+			else
+				return null; 
+		} finally {
+			pstmt2.close();
+		}
+		
+	}
 
 	public int getStudentID(int userID) throws SQLException {
 		PreparedStatement pstmt2 = null;
@@ -271,6 +293,7 @@ public class ServerImpl implements Server{
 	// ---------------------------------------
 	// returns false if current user (student) didn't reserve any topic (doesn't
 	// have a thesis)
+
 	public boolean uploadThesis(String content, int userID) throws Exception {
 		PreparedStatement pstmt = null;
 		String thesisName = null;
@@ -305,7 +328,7 @@ public class ServerImpl implements Server{
 			String SQL = " SELECT Employee.Name AS 'Reviewer', [Thesis].ThesisName, [Student].DepartmentID AS 'DepartmentNumber' FROM [Employee] JOIN  [Review] ON "
 					+ "[Employee].EmployeeID = [Review].ReviewerID "
 					+ "JOIN  [Thesis] ON [Thesis].ThesisName = [Review].ThesisName "
-					+ "JOIN [Student] ON [Student].StudentID = [Thesis].StudentID WHERE [Employee].UserID = ?";
+					+ "JOIN [Student] ON [Student].StudentID = [Thesis].StudentID WHERE ReviewerID = ?";
 			pstmt = con.prepareStatement(SQL);
 			pstmt.setInt(1, userID);
 			rs = pstmt.executeQuery();
@@ -430,7 +453,7 @@ public class ServerImpl implements Server{
 	public static void main(String[] args) throws Exception {
 		ServerImpl server = new ServerImpl();
 
-		System.out.println(server.login("DR8", "DR8"));
+//		System.out.println(server.login("DR8", "DR8"));
 		//
 		// for(Topic topic : server.getApprovedTopics())
 		// System.out.println(topic);
@@ -454,8 +477,8 @@ public class ServerImpl implements Server{
 
 		// server.uploadThesis("jestem arbuzem", 1);
 
-		// for(Thesis topic : server.getTopicsToReview(5))
-		// System.out.println(topic);
+		 for(Thesis topic : server.getTopicsToReview(7))
+			 System.out.println(topic);
 
 		// server.makeReview(4, "Mobile Zoo Guide", "jest super", 5.5f);
 
