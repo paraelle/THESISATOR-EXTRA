@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -233,8 +234,15 @@ public class StudentGUI {
 				public void actionPerformed(ActionEvent arg0) {
 					Path path = Paths.get(txtFilepath.getText());
 					File pfile = path.toFile();
-					if(pfile.exists())
-						JOptionPane.showMessageDialog(null, new String("Choosen file: " + pfile.getName()));
+					if(pfile.exists()){
+						try {
+							byte[] encoded = Files.readAllBytes(path);
+							user.getServer().uploadThesis(new String(encoded), user.getId());
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(null, new String("Connection error!"));
+						}
+						JOptionPane.showMessageDialog(null, new String("Choosen file: " + pfile.getName() + " uploaded succesfully."));
+					}
 					else
 						JOptionPane.showMessageDialog(null, new String("File does not exixts"));
 				}

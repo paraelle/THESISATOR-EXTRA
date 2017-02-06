@@ -3,6 +3,9 @@ package presentationLayer;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import javax.swing.JMenuBar;
@@ -19,6 +22,11 @@ import java.awt.Dimension;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
+
+import buisnessLayer.Thesis;
+import buisnessLayer.Topic;
+import buisnessLayer.User;
+
 import javax.swing.ImageIcon;
 import java.awt.Component;
 import java.awt.CardLayout;
@@ -35,6 +43,7 @@ public class ReviewerGUI {
 	private JTable table;
 	private JTable tableTheses;
 	private JTextArea textFieldReview;
+	private User user;
 
 	/**
 	 * Launch the application.
@@ -43,7 +52,7 @@ public class ReviewerGUI {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ReviewerGUI window = new ReviewerGUI();
+					ReviewerGUI window = new ReviewerGUI(args);
 					window.frmThesisatorextra.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -54,15 +63,18 @@ public class ReviewerGUI {
 
 	/**
 	 * Create the application.
+	 * @throws Exception  
 	 */
-	public ReviewerGUI() {
+	public ReviewerGUI(String[] args) throws Exception {
+		user = new User(args[0],args[1],Integer.parseInt(args[2]),args[3],args[4],Integer.parseInt(args[5]));
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @throws Exception 
 	 */
-	private void initialize() {
+	private void initialize() throws Exception {
 		frmThesisatorextra = new JFrame();
 		frmThesisatorextra.setResizable(false);
 		frmThesisatorextra.setTitle("THESISATOR-EXTRA");
@@ -84,13 +96,17 @@ public class ReviewerGUI {
 		scrollPane.setPreferredSize(new Dimension(750, 400));
 		panelThesisTopics.add(scrollPane);
 		
+		List<Topic> listTopics = user.getServer().getAvailableTopics(user.getDepartment());
+		ArrayList<String[]> list = new ArrayList<String[]>();
+		for(Topic topic : listTopics){
+			String[] row = {topic.getTopic(),topic.getSupervisor()};
+			list.add(row);
+		}
+		
 		table = new JTable();
 		scrollPane.setViewportView(table);
 		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"adsdad asdasd aasd asdasd asd asd", "g sdfg sdfg d"},
-				{"sa dasd asda d dasda sfgdfgdfsg sdfg sdfgs dfgdfg sdg", "gdfs gdsfgs"},
-			},
+				list.toArray(new String[list.size()][]),
 			new String[] {
 				"Thesis topic", "Teacher name"
 			}
@@ -121,13 +137,17 @@ public class ReviewerGUI {
 		panelThesesMain.add(scrollPaneTheses);
 		scrollPaneTheses.setPreferredSize(new Dimension(600, 400));
 		
+		List<Thesis> listThesis = user.getServer().getTopicsToReview(user.getUserID());
+		ArrayList<String[]> lisTmodel = new ArrayList<String[]>();
+		for(Thesis thesis : listThesis){
+			String[] row = {thesis.getThesisName(),thesis.getStudentName(),"More"};
+			list.add(row);
+		}
+		
 		tableTheses = new JTable();
-		scrollPaneTheses.setViewportView(tableTheses);
+		scrollPane.setViewportView(table);
 		tableTheses.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"adsdad asdasd aasd asdasd asd asd", "Adam Nieuk", "More"},
-				{"sa dasd asda d dasda sfgdfgdfsg sdfg sdfgs dfgdfg sdg", "Kuba Pasta", "More"},
-			},
+				lisTmodel.toArray(new String[lisTmodel.size()][]),
 			new String[] {
 				"Thesis topic", "Student name", "More"
 			}

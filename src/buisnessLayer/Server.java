@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface Server extends Remote {
 	public User login(String login, String password) throws Exception;
-//	public int getStudentID(int userID) throws Exception;
+	public int getStudentID(int userID) throws Exception;
 //	public int getDepartmentNumber(int userID) throws Exception;
 
 	// ---------------------------------- SEE LIST OF TOPICS
