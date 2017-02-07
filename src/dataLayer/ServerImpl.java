@@ -16,9 +16,11 @@ import buisnessLayer.Teacher;
 public class ServerImpl implements Server {
 
 	private Connection con;
-	// Sql Server's TCP/IP should be enabled first for this
-	// 'SQL' user should be created and GRANTED access to DB
-
+	/**
+	 *  Sql Server's TCP/IP should be enabled first for this
+	 *  'SQL' user should be created and GRANTED access to DB
+	 * @throws Exception
+	 */
 	public ServerImpl() throws Exception {
 
 		// get DB properties
@@ -39,7 +41,11 @@ public class ServerImpl implements Server {
 		System.out.println("# - Connection Obtained");
 	}
 
-	// returns null if current user (student) doesn NOT have topic reserved
+	/**
+	 *  returns null if current user (student) does NOT have topic reserved
+	 *  @param userID
+	 *  current user primary key
+	 */
 	public Topic getCurrentStudentTopic(int userID) throws Exception {
 		int studentID = getStudentID(userID);
 		PreparedStatement pstmt2 = null;
@@ -113,8 +119,12 @@ public class ServerImpl implements Server {
 		}
 	}
 
-	// ---------------------------------- LOGIN
-	// ---------------------------------------
+	/**
+	 *   LOGIN
+	 *   @return the logged in user object
+	 *   
+	 */
+
 	@Override
 	public User login(String login, String password) throws Exception {
 		User currentUser = null;
@@ -162,9 +172,9 @@ public class ServerImpl implements Server {
 		return currentUser;
 	}
 
-	// ---------------------------------- SEE LIST OF TOPICS
-	// ---------------------------------------
-	// all approved topics
+	/**
+	 *  SEE LIST OF approved TOPICS
+	 */
 	public List<Topic> getApprovedTopics() throws Exception {
 		List<Topic> list = new ArrayList<>();
 		Topic topic = null;
@@ -190,10 +200,12 @@ public class ServerImpl implements Server {
 		return list;
 	}
 
-	// ---------------------------------- APPROVE TOPICS
-	// ---------------------------------------
-	// for approveTopics, only given department topics
-	// needs department number of current user - HOD
+
+	/**
+	 *  for approveTopics, only given department topics
+	 *  @param departmentNumber
+	 *  department number of current user - HOD
+	 */
 	public List<Topic> getNotApprovedTopics(int departmentNumber) throws Exception {
 		List<Topic> list = new ArrayList<>();
 		Topic topic = null;
@@ -232,10 +244,12 @@ public class ServerImpl implements Server {
 		}
 	}
 
-	// ---------------------------------- RESERVE TOPIC
-	// ---------------------------------------
-	// not reserved topics - only topics from current student department
-	// needs department number of current user - student
+
+	/**
+	 *  not reserved topics - only topics from current student department
+	 *  @param departmentNumber
+	 *  department number of current user - student
+	 */
 	public List<Topic> getAvailableTopics(int departmentNumber) throws Exception {
 		List<Topic> list = new ArrayList<>();
 		Topic topic = null;
@@ -262,16 +276,18 @@ public class ServerImpl implements Server {
 		return list;
 	}
 
-	// current user -> userID
-	// thesisName is Topic.getTopic()
+	/**
+	 * Reserve a topic in database and creates empty Thesis
+	 * 
+	 * @param userID
+	 *  ID of currently logged in user
+	 */
 	public void reserveTopic(String topicName, int userID) throws Exception {
 		PreparedStatement pstmt = null;
 		PreparedStatement pstmt1 = null;
 		int studentID = 0;
 		try {
 			studentID = getStudentID(userID);
-System.out.println(studentID);
-System.out.println(studentID);
 			String SQL1 = "UPDATE [Topic] SET StudentID = ? WHERE TopicName = ?";
 			pstmt = con.prepareStatement(SQL1);
 			pstmt.setInt(1, studentID);
@@ -285,16 +301,18 @@ System.out.println(studentID);
 			pstmt1.setInt(2, userID);
 			pstmt1.executeUpdate();
 		} finally {
-//			pstmt.close();
-//			pstmt1.close();
+			pstmt.close();
+			pstmt1.close();
 		}
 	}
 
-	// ---------------------------------- UPLOAD THESIS
-	// ---------------------------------------
-	// returns false if current user (student) didn't reserve any topic (doesn't
-	// have a thesis)
 
+	/**
+	 * Upload thesis file
+	 * 
+	 *  @return boolean
+	 *  false if current user (student) didn't reserve any topic (doesn't have a thesis)
+	 */
 	public boolean uploadThesis(String content, int userID) throws Exception {
 		PreparedStatement pstmt = null;
 		String thesisName = null;
@@ -315,9 +333,11 @@ System.out.println(studentID);
 		return true;
 	}
 
-	// ---------------------------------- MAKE A REVIEW
-	// ---------------------------------------
-	// for reviewers only
+	/**
+	 *  MAKE A REVIEW
+	 *  
+	 *  for reviewers only
+	 */
 	public List<Thesis> getTopicsToReview(int userID) throws Exception {
 		List<Thesis> list = new ArrayList<>();
 		Thesis thesis = null;
@@ -360,10 +380,11 @@ System.out.println(studentID);
 		}
 	}
 
-	// ---------------------------------- ASSIGN REVIEWERS
-	// --------------------------------
-	// topic - supervisor - reviewer
-	// tylko dla obecnego usera -> reviewera
+	/**
+	 * ASSIGN REVIEWERS
+	 * 
+	 * only for current (reviewer)
+	 */
 	public List<Thesis> getThesesToAssignReviewers(int userID) throws Exception {
 		List<Thesis> list = new ArrayList<>();
 		Thesis thesis = null;
@@ -401,7 +422,9 @@ System.out.println(studentID);
 		return list;
 	}
 
-	// teachers to choose from to assign to a thesis as REVIEWER
+	/**
+	 *  teachers to choose from to assign to a thesis as REVIEWER
+	 */
 	public List<Teacher> getTeacherList(String thesis) throws Exception {
 		List<Teacher> list = new ArrayList<>();
 		Teacher teacher = null;
@@ -443,8 +466,8 @@ System.out.println(studentID);
 				list.add(teacher);
 			}
 		} finally {
-			// pstmt.close();
-			// pstmt1.close();
+			 pstmt.close();
+			 pstmt1.close();
 		}
 		return list;
 	}
@@ -476,7 +499,16 @@ System.out.println(studentID);
 		}
 	}
 
-	// returns 0 if no such employee in DB
+	/**
+	 * Returns employee ID
+	 * 
+	 * 
+	 *  
+	 * @param name
+	 * name of the employee
+	 * @return int
+	 * returns 0 if no such employee in DB
+	 */
 	public int getEmployeeID(String name) throws Exception {
 		PreparedStatement pstmt2 = null;
 		ResultSet rs = null;
@@ -494,15 +526,14 @@ System.out.println(studentID);
 		}
 	}
 
-	// test
-	public static void main(String[] args) throws Exception {
-		ServerImpl server = new ServerImpl();
-		
-		User user = null;
-		user = server.login("student", "student");
-		System.out.println(user.getUserID());
-		System.out.println(user.getId());
-		 System.out.println(server.login("student", "student"));
+//	public static void main(String[] args) throws Exception {
+//		ServerImpl server = new ServerImpl();
+//		
+//		User user = null;
+//		user = server.login("student", "student");
+//		System.out.println(user.getUserID());
+//		System.out.println(user.getId());
+//		 System.out.println(server.login("student", "student"));
 		//
 		// for(Topic topic : server.getApprovedTopics())
 		// System.out.println(topic);
@@ -525,11 +556,11 @@ System.out.println(studentID);
 		// server.approveTopic("Topic");
 
 		// server.uploadThesis("jestem arbuzem", 1);
-
-		 for(Thesis topic : server.getTopicsToReview(7)) {
-		 System.out.println(topic.getThesisName());
-		 System.out.println(topic.getStudentName());
-		 }
+//
+//		 for(Thesis topic : server.getTopicsToReview(7)) {
+//		 System.out.println(topic.getThesisName());
+//		 System.out.println(topic.getStudentName());
+//		 }
 
 		// server.makeReview(4, "Mobile Zoo Guide", "jest super", 5.5f);
 
@@ -547,5 +578,5 @@ System.out.println(studentID);
 //
 //		 server.updateReviewer("This topic is reserved", "Karol Andek");
 
-	}
+//	}
 }
