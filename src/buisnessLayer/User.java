@@ -21,6 +21,7 @@ public class User {
 		this.username = username;
 		this.password = password;
 		this.userID = id;
+		this.id = id;
 		this.type = UserType.fromString(type);
 		this.name = name;
 		this.departmentNumber = departmentNumber;

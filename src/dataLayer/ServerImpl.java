@@ -270,7 +270,8 @@ public class ServerImpl implements Server {
 		int studentID = 0;
 		try {
 			studentID = getStudentID(userID);
-
+System.out.println(studentID);
+System.out.println(studentID);
 			String SQL1 = "UPDATE [Topic] SET StudentID = ? WHERE TopicName = ?";
 			pstmt = con.prepareStatement(SQL1);
 			pstmt.setInt(1, studentID);
@@ -284,8 +285,8 @@ public class ServerImpl implements Server {
 			pstmt1.setInt(2, userID);
 			pstmt1.executeUpdate();
 		} finally {
-			pstmt.close();
-			pstmt1.close();
+//			pstmt.close();
+//			pstmt1.close();
 		}
 	}
 
@@ -496,8 +497,12 @@ public class ServerImpl implements Server {
 	// test
 	public static void main(String[] args) throws Exception {
 		ServerImpl server = new ServerImpl();
-
-		// System.out.println(server.login("DR8", "DR8"));
+		
+		User user = null;
+		user = server.login("student", "student");
+		System.out.println(user.getUserID());
+		System.out.println(user.getId());
+		 System.out.println(server.login("student", "student"));
 		//
 		// for(Topic topic : server.getApprovedTopics())
 		// System.out.println(topic);

@@ -36,7 +36,7 @@ public class Thesis {
 	}
 	
 	public String getSupervisorName() {
-		return this.thesisName;	
+		return this.supervisorName;	
 	}
 	
 	public String getThesisName() {

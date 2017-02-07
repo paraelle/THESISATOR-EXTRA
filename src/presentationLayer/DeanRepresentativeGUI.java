@@ -93,7 +93,7 @@ public class DeanRepresentativeGUI {
 		scrollPane.setPreferredSize(new Dimension(750, 400));
 		panelThesisTopics.add(scrollPane);
 		
-		List<Topic> listTopics = user.getServer().getAvailableTopics(user.getDepartment());
+		List<Topic> listTopics = user.getServer().getApprovedTopics();
 		ArrayList<String[]> list = new ArrayList<String[]>();
 		for(Topic topic : listTopics){
 			String[] row = {topic.getTopic(),topic.getSupervisor()};
